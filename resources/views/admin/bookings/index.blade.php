@@ -93,7 +93,7 @@
                                         break;
                                     case 'refunded':
                                         color = 'bg-blue-100 text-blue-800';
-                                        text = 'Sudah Direfund';
+                                        text = 'Direfund';
                                         break;
                                     default:
                                         color = 'bg-gray-100 text-gray-800';

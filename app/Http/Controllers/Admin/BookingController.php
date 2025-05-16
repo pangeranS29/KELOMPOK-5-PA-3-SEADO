@@ -178,6 +178,9 @@ class BookingController extends Controller
     /**
      * Proses refund untuk booking
      */
+    /**
+     * Process refund for booking
+     */
     public function processRefund(Booking $booking, Request $request)
     {
         $request->validate([
@@ -185,35 +188,35 @@ class BookingController extends Controller
             'refund_note' => 'nullable|string|max:500'
         ]);
 
-        // Simpan bukti transfer refund
+        // Store refund proof
         $refundProofPath = $request->file('refund_proof')->store('refund_proofs', 'public');
 
-        // Update data booking
+        // Update booking status
         $booking->update([
             'status_pembayaran' => 'refunded',
-            'total_harga' => null, // Kosongkan total harga
+            'total_harga' => null, // Null kan total harga
             'refund_proof' => $refundProofPath,
             'refund_processed_at' => now()
         ]);
 
-        // Format nomor telepon customer
-        $customerPhone = preg_replace('/^0/', '62', $booking->user->phone);
+        // Get customer phone number
+        $customerPhone = $booking->user->phone;
+        $formattedPhone = preg_replace('/^0/', '62', $customerPhone);
         $adminPhone = env('ADMIN_PHONE', '6285763189029');
 
-        // Buat pesan WhatsApp
-        $message = "📢 *PEMBERITAHUAN REFUND* 📢\n\n";
-        $message .= "Booking ID: #{$booking->id}\n";
-        $message .= "Status: *Refund Berhasil Diproses*\n\n";
+        // Create WhatsApp message
+        $message = "Refund untuk booking #{$booking->id} telah diproses.\n\n";
         $message .= "Dana telah dikembalikan ke rekening Anda.\n\n";
 
         if ($request->refund_note) {
-            $message .= "📝 Catatan:\n{$request->refund_note}\n\n";
+            $message .= "Catatan: {$request->refund_note}\n\n";
         }
 
-        $message .= "🔗 Bukti Refund:\n" . asset('storage/' . $refundProofPath) . "\n\n";
-        $message .= "Untuk pertanyaan, hubungi Admin:\n{$adminPhone}";
+        $message .= "Bukti refund dapat dilihat di: " . asset('storage/' . $refundProofPath) . "\n\n";
+        $message .= "Hubungi admin di: {$adminPhone} jika ada pertanyaan.";
 
-        $whatsappUrl = "https://wa.me/{$customerPhone}?text=" . urlencode($message);
+        $encodedMessage = urlencode($message);
+        $whatsappUrl = "https://wa.me/{$formattedPhone}?text={$encodedMessage}";
 
         return response()->json([
             'message' => 'Refund berhasil diproses',

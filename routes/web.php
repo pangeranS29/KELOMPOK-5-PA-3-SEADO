@@ -73,6 +73,9 @@ Route::name('front.')->group(function () {
         Route::put('/account/update', [AccountController::class, 'update'])->name('account.update');
         Route::post('/account/reset-password', [AccountController::class, 'resetPassword'])->name('account.reset-password');
 
+        Route::post('/account/request-refund/{id}', [AccountController::class, 'requestRefund'])
+    ->name('front.account.request-refund');
+
         Route::post('/booking/{booking}/check-status', [AccountController::class, 'checkBookingStatus'])
             ->name('booking.check-status');
     });
@@ -96,6 +99,8 @@ Route::prefix('admin')->name('admin.')->middleware([
     Route::post('/bookings/{booking}/accept', [AdminBookingController::class, 'accept'])->name('bookings.accept');
     Route::post('/bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
     Route::resource('jetski', AdminJetskiController::class);
+
+   Route::post('/bookings/{booking}/process-refund', [AdminBookingController::class, 'processRefund'])->name('bookings.process-refund');
 
     // Berita Routes
     Route::resource('beritas', AdminBeritaPaketController::class)
