@@ -79,16 +79,19 @@ class DetailPaketController extends Controller
     {
         $data = $request->all();
 
-
-        // Upload multiple photos
         if ($request->hasFile('foto')) {
             $foto = [];
 
             foreach ($request->file('foto') as $photo) {
-                $photoPath = $photo->store('assets/item', 'public');
+                $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $destinationPath = public_path('storage/assets/item');
 
-                // Store as json
-                array_push($foto, $photoPath);
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                $photo->move($destinationPath, $filename);
+                array_push($foto, 'assets/item/' . $filename);
             }
 
             $data['foto'] = json_encode($foto);
@@ -98,6 +101,7 @@ class DetailPaketController extends Controller
 
         return redirect()->route('admin.detail_pakets.index');
     }
+
 
 
     /**
@@ -130,27 +134,45 @@ class DetailPaketController extends Controller
     {
         $data = $request->all();
 
-
-        // Upload multiple photos
         if ($request->hasFile('foto')) {
+            // Hapus foto lama dari storage
+            $oldPhotos = json_decode($detail_paket->foto, true);
+
+            if (!empty($oldPhotos)) {
+                foreach ($oldPhotos as $oldPhoto) {
+                    $oldPhotoPath = public_path('storage/' . $oldPhoto);
+                    if (file_exists($oldPhotoPath)) {
+                        @unlink($oldPhotoPath);
+                    }
+                }
+            }
+
+            // Upload foto baru
             $foto = [];
 
             foreach ($request->file('foto') as $photo) {
-                $photoPath = $photo->store('assets/item', 'public');
+                $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $destinationPath = public_path('storage/assets/item');
 
-                // Store as json
-                array_push($foto, $photoPath);
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                $photo->move($destinationPath, $filename);
+                array_push($foto, 'assets/item/' . $filename);
             }
 
             $data['foto'] = json_encode($foto);
         } else {
-            // If photos is empty, then use old photos
             $data['foto'] = $detail_paket->foto;
         }
 
         $detail_paket->update($data);
+
         return redirect()->route('admin.detail_pakets.index');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
