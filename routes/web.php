@@ -59,10 +59,10 @@ Route::name('front.')->group(function () {
         Route::post('/payment/{booking}/check-expired', [PaymentController::class, 'checkExpired'])->name('payment.check-expired');
         Route::post('/payment/{booking}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 
-        Route::middleware('auth')->group(function() {
-    Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
-    Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
-});
+        Route::middleware('auth')->group(function () {
+            Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
+            Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
+        });
 
 
 
@@ -74,7 +74,7 @@ Route::name('front.')->group(function () {
         Route::post('/account/reset-password', [AccountController::class, 'resetPassword'])->name('account.reset-password');
 
         Route::post('/account/request-refund/{id}', [AccountController::class, 'requestRefund'])
-    ->name('front.account.request-refund');
+            ->name('front.account.request-refund');
 
         Route::post('/booking/{booking}/check-status', [AccountController::class, 'checkBookingStatus'])
             ->name('booking.check-status');
@@ -100,7 +100,7 @@ Route::prefix('admin')->name('admin.')->middleware([
     Route::post('/bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
     Route::resource('jetski', AdminJetskiController::class);
 
-   Route::post('/bookings/{booking}/process-refund', [AdminBookingController::class, 'processRefund'])->name('bookings.process-refund');
+    Route::post('/bookings/{booking}/process-refund', [AdminBookingController::class, 'processRefund'])->name('bookings.process-refund');
 
     // Berita Routes
     Route::resource('beritas', AdminBeritaPaketController::class)
@@ -115,6 +115,6 @@ Route::prefix('admin')->name('admin.')->middleware([
         ]);
 
     // Optional: If you want to include the show route
-    Route::get('beritas/{berita}',[AdminBeritaPaketController::class, 'show'])
+    Route::get('beritas/{berita}', [AdminBeritaPaketController::class, 'show'])
         ->name('beritas.show');
 });
