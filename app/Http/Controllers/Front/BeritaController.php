@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Front;
 
 use App\Models\User;
 use App\Models\Berita;
+use App\Models\Booking;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 
 class BeritaController extends Controller
@@ -54,11 +55,11 @@ class BeritaController extends Controller
             ->take(5)
             ->get()
             ->map(function ($berita) use ($user) {
-                 $gambarPath = $berita->gambar
-                ? (Str::startsWith($berita->gambar, 'http')
-                    ? $berita->gambar
-                    : asset('storage/' . $berita->gambar))
-                : asset('/images/news-placeholder.jpg');
+                $gambarPath = $berita->gambar
+                    ? (Str::startsWith($berita->gambar, 'http')
+                        ? $berita->gambar
+                        : asset('storage/' . $berita->gambar))
+                    : asset('/images/news-placeholder.jpg');
 
                 $pivot = $berita->users->first() ? $berita->users->first()->pivot : null;
 
@@ -108,5 +109,44 @@ class BeritaController extends Controller
     {
         $users = User::all();
         $berita->users()->attach($users, ['dibaca' => false]);
+    }
+
+    // PaymentController.php
+    public function latestPayments()
+    {
+        $payments = Booking::where('users_id', auth()->id())
+            ->whereNotNull('bukti_pembayaran')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->map(function ($booking) {
+                // Mapping status frontend berdasarkan status backend
+                $frontendStatusMap = [
+                    'menunggu_konfirmasi' => 'menunggu_konfirmasi',
+                    'success'             => 'dikonfirmasi',
+                    'rejected'            => 'ditolak',
+                    'refunded'            => 'refund',
+                    'canceled'            => 'canceled'
+                ];
+
+                // Teks notifikasi
+                $statusText = [
+                    'menunggu_konfirmasi' => 'Pembayaran sedang diverifikasi',
+                    'success' => 'Pembayaran berhasil dikonfirmasi',
+                    'rejected' => 'Pembayaran ditolak',
+                    'refunded' => 'Pembayaran direfund',
+                    'canceled' => 'Booking dibatalkan',
+                ];
+
+                return [
+                    'id' => $booking->id,
+                    'text' => 'Booking #' . $booking->id . ' - ' . ($statusText[$booking->status_pembayaran] ?? 'Status tidak diketahui'),
+                    'created_at' => $booking->created_at->format('d M Y H:i'),
+                    'status' => $booking->status_pembayaran,
+                    'display_status' => $booking->status_pembayaran
+                ];
+            });
+
+        return response()->json($payments);
     }
 }

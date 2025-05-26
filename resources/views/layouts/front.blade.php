@@ -161,25 +161,25 @@
                                         class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200">
                                         <div
                                             class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                                            <h3 class="text-lg font-semibold text-gray-800">Berita Terbaru</h3>
-                                            {{-- <button @click="markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800">Tandai sudah dibaca</button> --}}
+                                            <h3 class="text-lg font-semibold text-gray-800">Notifikasi</h3>
+                                            <button @click="markAllAsRead()"
+                                                class="text-sm text-blue-600 hover:text-blue-800">Tandai sudah
+                                                dibaca</button>
                                         </div>
 
                                         <div class="max-h-96 overflow-y-auto">
-                                            <template x-if="notifications.length === 0">
+                                            <template x-if="notifications.length === 0 && payments.length === 0">
                                                 <div class="p-4 text-center text-gray-500">
-                                                    Tidak ada berita terbaru
+                                                    Tidak ada notifikasi
                                                 </div>
                                             </template>
 
-                                            <template x-for="berita in notifications" :key="berita.id">
+                                            <!-- Tampilkan Berita -->
+                                            <template x-for="berita in notifications" :key="'berita-' + berita.id">
                                                 <a :href="'{{ route('front.berita.show', '') }}/' + berita.slug"
                                                     class="flex items-start px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0">
                                                     <div class="flex-shrink-0 mr-3">
-                                                        <img :src="berita.gambar ? (berita.gambar.startsWith('http') ? berita
-                                                                .gambar : '/storage/' + berita.gambar) :
-                                                            '/images/news-placeholder.jpg'"
-                                                            :alt="berita.judul"
+                                                        <img :src="berita.gambar" :alt="berita.judul"
                                                             class="h-12 w-12 object-cover rounded-lg">
                                                     </div>
                                                     <div class="flex-1 min-w-0">
@@ -193,12 +193,73 @@
                                                     </template>
                                                 </a>
                                             </template>
+
+                                            <!-- Tampilkan Pembayaran -->
+                                            <template x-for="payment in payments" :key="'payment-' + payment.id">
+                                                <div
+                                                    class="px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0">
+                                                    <div class="flex items-start">
+                                                        <div class="flex-shrink-0 mr-3">
+                                                            <template x-if="payment.display_status === 'success'">
+                                                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                                                            </template>
+                                                            <template
+                                                                x-if="payment.display_status === 'menunggu_konfirmasi'">
+                                                                <i class="fas fa-clock text-yellow-500 text-xl"></i>
+                                                            </template>
+                                                            <template x-if="payment.display_status === 'rejected'">
+                                                                <i class="fas fa-times-circle text-red-500 text-xl"></i>
+                                                            </template>
+                                                            <template x-if="payment.display_status === 'refunded'">
+                                                                <i class="fas fa-undo text-blue-500 text-xl"></i>
+                                                            </template>
+                                                            <template x-if="payment.display_status === 'canceled'">
+                                                                <i class="fas fa-ban text-red-500 text-xl"></i>
+                                                            </template>
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <p class="text-sm font-medium text-gray-800"
+                                                                x-text="payment.text"></p>
+                                                            <p class="text-xs text-gray-500 mt-1"
+                                                                x-text="payment.created_at"></p>
+
+                                                            <!-- Badge Status -->
+                                                            <span
+                                                                class="text-xs capitalize mt-1 inline-block px-2 py-0.5 rounded"
+                                                                :class="{
+                                                                    'bg-yellow-100 text-yellow-800': payment
+                                                                        .display_status === 'menunggu_konfirmasi',
+                                                                    'bg-green-100 text-green-800': payment
+                                                                        .display_status === 'success',
+                                                                    'bg-red-100 text-red-800': ['rejected', 'canceled']
+                                                                        .includes(payment.display_status),
+                                                                    'bg-blue-100 text-blue-800': payment
+                                                                        .display_status === 'refunded'
+                                                                }"
+                                                                x-text="
+                                    payment.display_status === 'menunggu_konfirmasi' ? 'Menunggu Konfirmasi' :
+                                    payment.display_status === 'success' ? 'Berhasil' :
+                                    payment.display_status === 'rejected' ? 'Ditolak' :
+                                    payment.display_status === 'canceled' ? 'Dibatalkan' :
+                                    payment.display_status === 'refunded' ? 'Direfund' :
+                                    'Tidak Diketahui'
+                                ">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
                                         </div>
 
-                                        <div class="px-4 py-2 border-t border-gray-200 bg-gray-50 text-center">
+                                        <!-- Footer Links -->
+                                        <div class="px-4 py-2 border-t border-gray-200 bg-gray-50 flex justify-between">
+                                            <a href="{{ url('/account?tab=transaction') }}"
+                                                class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                                Lihat Riwayat Booking
+                                            </a>
                                             <a href="{{ route('front.berita.index') }}"
                                                 class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                                Lihat Semua Berita
+                                                Lihat Berita
                                             </a>
                                         </div>
                                     </div>
@@ -339,92 +400,93 @@
     </main>
 
     <footer class="bg-black text-white pt-12 pb-6">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Follow Us Section (Geser ke kanan dan rata kanan) -->
-            <div class="ml-20">
-    <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
-        Follow Us</h3>
-    <ul class="space-y-3 mt-4">
-        <li>
-            <a href="https://www.instagram.com/seadoosafarisamosir/"
-                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                <i class="fab fa-instagram text-lg mr-3 w-6 text-center"></i>
-                <span>Instagram</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://web.facebook.com/profile.php?id=61559648390682"
-                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                <i class="fab fa-facebook text-lg mr-3 w-6 text-center"></i>
-                <span>Facebook</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://www.tiktok.com/@seadoosafarisamosir?is_from_webapp=1&sender_device=pc"
-                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                <i class="fab fa-tiktok text-lg mr-3 w-6 text-center"></i>
-                <span>Tiktok</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://www.youtube.com/@Seadoo_SafariSamosir"
-                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                <i class="fab fa-youtube text-lg mr-3 w-6 text-center"></i>
-                <span>Youtube</span>
-            </a>
-        </li>
-    </ul>
-</div>
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Follow Us Section (Geser ke kanan dan rata kanan) -->
+                <div class="ml-20">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
+                        Follow Us</h3>
+                    <ul class="space-y-3 mt-4">
+                        <li>
+                            <a href="https://www.instagram.com/seadoosafarisamosir/"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fab fa-instagram text-lg mr-3 w-6 text-center"></i>
+                                <span>Instagram</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://web.facebook.com/profile.php?id=61559648390682"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fab fa-facebook text-lg mr-3 w-6 text-center"></i>
+                                <span>Facebook</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.tiktok.com/@seadoosafarisamosir?is_from_webapp=1&sender_device=pc"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fab fa-tiktok text-lg mr-3 w-6 text-center"></i>
+                                <span>Tiktok</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/@Seadoo_SafariSamosir"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fab fa-youtube text-lg mr-3 w-6 text-center"></i>
+                                <span>Youtube</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-            <!-- Location Section -->
-            <div class="text-center md:text-left">
-                <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
-                    Location</h3>
-                <p class="text-gray-300 mt-4">Jalan Lingkar, Tuktuk Siadong, Kabupaten Samosir, Sumatera Utara, 22395</p>
-                <div class="mt-4 rounded-lg overflow-hidden border border-gray-700">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3814.214630319171!2d98.84166901030349!3d2.6767433558641707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031ebf3b944b9dd%3A0xc0b508b6a21d8075!2sSeadoo%20Safari%20Samosir!5e1!3m2!1sid!2sid!4v1740041762917!5m2!1sid!2sid"
-                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <!-- Location Section -->
+                <div class="text-center md:text-left">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
+                        Location</h3>
+                    <p class="text-gray-300 mt-4">Jalan Lingkar, Tuktuk Siadong, Kabupaten Samosir, Sumatera Utara,
+                        22395</p>
+                    <div class="mt-4 rounded-lg overflow-hidden border border-gray-700">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3814.214630319171!2d98.84166901030349!3d2.6767433558641707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031ebf3b944b9dd%3A0xc0b508b6a21d8075!2sSeadoo%20Safari%20Samosir!5e1!3m2!1sid!2sid!4v1740041762917!5m2!1sid!2sid"
+                            width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+
+                <!-- Contact Us Section -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
+                        Contact Us</h3>
+                    <ul class="space-y-3 mt-4">
+                        <li>
+                            <a href="mailto:info@seadoosafari.com"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fas fa-envelope text-lg mr-3 w-6 text-center"></i>
+                                <span>info@seadoosafari.com</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:+6281234567890"
+                                class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                                <i class="fas fa-phone-alt text-lg mr-3 w-6 text-center"></i>
+                                <span>082369595172</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-clock text-lg mr-3 w-6 text-center"></i>
+                                <span>Open Daily: 08:00 - 18:00 WIB</span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Contact Us Section -->
-            <div>
-                <h3 class="text-xl font-bold mb-4 text-yellow-400 border-b border-yellow-400 pb-2 inline-block">
-                    Contact Us</h3>
-                <ul class="space-y-3 mt-4">
-                    <li>
-                        <a href="mailto:info@seadoosafari.com"
-                            class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                            <i class="fas fa-envelope text-lg mr-3 w-6 text-center"></i>
-                            <span>info@seadoosafari.com</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="tel:+6281234567890"
-                            class="flex items-center text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                            <i class="fas fa-phone-alt text-lg mr-3 w-6 text-center"></i>
-                            <span>082369595172</span>
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex items-center text-gray-300">
-                            <i class="fas fa-clock text-lg mr-3 w-6 text-center"></i>
-                            <span>Open Daily: 08:00 - 18:00 WIB</span>
-                        </div>
-                    </li>
-                </ul>
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
+                <p>&copy; {{ date('Y') }} Seadoo Safari. All rights reserved.</p>
             </div>
         </div>
-
-        <!-- Copyright -->
-        <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
-            <p>&copy; {{ date('Y') }} Seadoo Safari. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
 
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"
@@ -437,62 +499,68 @@
             mobileNav.classList.toggle('hidden');
         });
 
-        // Notification dropdown logic
+        // Notification dropdown logic - Updated version
         function notificationDropdown() {
             return {
                 open: false,
                 notifications: [],
+                payments: [],
                 unreadCount: 0,
-                isLoading: false,
 
-                fetchNotifications() {
-                    this.isLoading = true;
-                    fetch('{{ route('front.api.berita.latest') }}', {
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            credentials: 'include'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            this.notifications = data;
-                            this.unreadCount = data.filter(berita => !berita.dibaca).length;
-                            this.isLoading = false;
-                        })
-                        .catch(() => this.isLoading = false);
-                },
-
-                markAllAsRead() {
-                    fetch('{{ route('front.api.berita.markAllAsRead') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            },
-                            credentials: 'include'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.notifications.forEach(berita => {
-                                    berita.dibaca = true;
-                                });
-                                this.unreadCount = 0;
-                            }
-                        });
+                init() {
+                    this.fetchNotifications();
+                    this.fetchPayments();
+                    // Refresh notifications every 30 seconds
+                    setInterval(() => {
+                        if (this.open) {
+                            this.fetchNotifications();
+                            this.fetchPayments();
+                        }
+                    }, 30000);
                 },
 
                 toggleDropdown() {
                     this.open = !this.open;
-                    if (this.open && this.unreadCount > 0) {
-                        this.markAllAsRead();
+                    if (this.open) {
+                        this.fetchNotifications();
+                        this.fetchPayments();
                     }
                 },
 
-                init() {
-                    this.fetchNotifications();
+                fetchNotifications() {
+                    fetch('/api/berita/latest')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.notifications = data;
+                            this.calculateUnreadCount();
+                        });
+                },
+
+                fetchPayments() {
+                    fetch('/api/payments/latest')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.payments = data;
+                            // Count unread payments as well if needed
+                            // this.unreadCount += data.filter(p => !p.read).length;
+                        });
+                },
+
+                markAllAsRead() {
+                    fetch('/api/berita/mark-all-read', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(() => {
+                            this.fetchNotifications();
+                        });
+                },
+
+                calculateUnreadCount() {
+                    this.unreadCount = this.notifications.filter(berita => !berita.dibaca).length;
                 }
             }
         }

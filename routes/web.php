@@ -61,6 +61,7 @@ Route::name('front.')->group(function () {
 
         Route::middleware('auth')->group(function () {
             Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
+            Route::get('/api/payments/latest', [FrontBeritaController::class, 'latestPayments'])->name('api.payments.latest');
             Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
         });
 
@@ -98,7 +99,6 @@ Route::prefix('admin')->name('admin.')->middleware([
     Route::resource('bookings', AdminBookingController::class);
     Route::post('/bookings/{booking}/accept', [AdminBookingController::class, 'accept'])->name('bookings.accept');
     Route::post('/bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
-    Route::resource('jetski', AdminJetskiController::class);
 
     Route::post('/bookings/{booking}/process-refund', [AdminBookingController::class, 'processRefund'])->name('bookings.process-refund');
 
