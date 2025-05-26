@@ -33,9 +33,7 @@
                                 <h1 class="font-bold text-[24px] leading-[42px] text-dark mb-[6px]">
                                     {{ $detail_paket->pilihpaket ? $detail_paket->pilihpaket->nama_paket : '-' }}
                                 </h1>
-                                <p class="text-secondary font-normal text-base mb-[10px]">
-                                  Duriasi Paket   {{ $detail_paket->pilihpaket ? $detail_paket->pilihpaket->durasi : '-' }} Menit
-                                </p>
+
                             </div>
 
                             <ul class="flex flex-col gap-4 flex-start pt-3 pb-[25px]">
