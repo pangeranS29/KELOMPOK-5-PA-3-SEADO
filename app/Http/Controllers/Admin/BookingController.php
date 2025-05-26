@@ -49,6 +49,7 @@ class BookingController extends Controller
                         <i class="fas fa-eye mr-1"></i> Preview
                     </button>';
                 })
+
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -188,23 +189,39 @@ class BookingController extends Controller
             'refund_note' => 'nullable|string|max:500'
         ]);
 
-        // Store refund proof
-        $refundProofPath = $request->file('refund_proof')->store('refund_proofs', 'public');
+        if ($request->hasFile('refund_proof')) {
+            $file = $request->file('refund_proof');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            $destinationPath = public_path('storage/refund_proofs');
+
+            // Buat folder jika belum ada
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            $file->move($destinationPath, $filename);
+
+            // Simpan path relatif
+            $refundProofPath = 'refund_proofs/' . $filename;
+        } else {
+            return back()->with('error', 'File refund tidak ditemukan.');
+        }
 
         // Update booking status
         $booking->update([
             'status_pembayaran' => 'refunded',
-            'total_harga' => null, // Null kan total harga
+            'total_harga' => null,
             'refund_proof' => $refundProofPath,
             'refund_processed_at' => now()
         ]);
 
-        // Get customer phone number
+        // Format nomor telepon
         $customerPhone = $booking->user->phone;
         $formattedPhone = preg_replace('/^0/', '62', $customerPhone);
         $adminPhone = env('ADMIN_PHONE', '6285763189029');
 
-        // Create WhatsApp message
+        // Buat pesan WhatsApp
         $message = "Refund untuk booking #{$booking->id} telah diproses.\n\n";
         $message .= "Dana telah dikembalikan ke rekening Anda.\n\n";
 
