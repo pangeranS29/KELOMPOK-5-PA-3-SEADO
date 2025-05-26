@@ -75,7 +75,7 @@
                                             Lengkap</label>
                                         <input
                                             class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/50 transition"
-                                            id="name" name="name" type="text" required
+                                            id="name" name="name" type="text" required readonly
                                             value="{{ Auth::user()->name }}" placeholder="Nama lengkap Anda">
                                     </div>
 
