@@ -6,9 +6,10 @@ use Carbon\Carbon;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Log; // Add this line
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log; // Add this line
 
 class PaymentController extends Controller
 {
@@ -60,43 +61,52 @@ class PaymentController extends Controller
     }
 
     public function uploadBuktiPembayaran(Request $request, $bookingId)
-{
-    $booking = Booking::findOrFail($bookingId);
+    {
+        $booking = Booking::findOrFail($bookingId);
 
-    $request->validate([
-        'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:5048',
-    ]);
+        $request->validate([
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:5048',
+        ]);
 
-    // Cek expired untuk pending payment
-    if ($this->isPendingPaymentExpired($booking)) {
-        $booking->status_pembayaran = 'expired';
-        $booking->save();
-        return redirect()->route('front.index')->with('error', 'Waktu pembayaran telah habis. Silakan booking ulang.');
-    }
-
-    if ($request->hasFile('bukti_pembayaran')) {
-        $file = $request->file('bukti_pembayaran');
-        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-        $destinationPath = public_path('storage/bukti_pembayaran');
-
-        // Pastikan foldernya ada
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
+        // Cek expired untuk pending payment
+        if ($this->isPendingPaymentExpired($booking)) {
+            $booking->status_pembayaran = 'expired';
+            $booking->save();
+            return redirect()->route('front.index')->with('error', 'Waktu pembayaran telah habis. Silakan booking ulang.');
         }
 
-        $file->move($destinationPath, $filename);
+        if ($request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-        // Simpan path relatif untuk digunakan di view
-        $booking->bukti_pembayaran = 'bukti_pembayaran/' . $filename;
-        $booking->status_pembayaran = 'menunggu_konfirmasi';
-        $booking->save();
+            $destinationPath = public_path('storage/bukti_pembayaran');
 
-        return view('success', compact('booking'));
+            // Pastikan foldernya ada
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            $file->move($destinationPath, $filename);
+
+            // Simpan path relatif untuk digunakan di view
+            $booking->bukti_pembayaran = 'bukti_pembayaran/' . $filename;
+            $booking->status_pembayaran = 'menunggu_konfirmasi';
+            $booking->save();
+
+            // Kirim email notifikasi ke admin
+            try {
+                Mail::to('pangeransilaen1417@gmail.com')
+                    ->send(new \App\Mail\PaymentNotificationMail($booking));
+            } catch (\Exception $e) {
+                Log::error('Gagal mengirim email notifikasi: ' . $e->getMessage());
+                // Lanjutkan meskipun email gagal dikirim
+            }
+
+            return view('success', compact('booking'));
+        }
+
+        return back()->with('error', 'Gagal upload bukti pembayaran.');
     }
-
-    return back()->with('error', 'Gagal upload bukti pembayaran.');
-}
 
     // ... method lainnya tetap sama ...
 
@@ -188,7 +198,7 @@ class PaymentController extends Controller
     }
 
     // Tambahkan method ini di PaymentController
-     public function cetakResi($bookingId)
+    public function cetakResi($bookingId)
     {
         $booking = Booking::with('detail_paket.pilihpaket', 'user')->findOrFail($bookingId);
 

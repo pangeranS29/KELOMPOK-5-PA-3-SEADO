@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\BookingRequest;
+use Carbon\Carbon;
 use App\Models\Booking;
 use App\Models\PilihPaket;
 use App\Models\DetailPaket;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\BookingRequest;
 
 class BookingController extends Controller
 {
@@ -114,17 +116,23 @@ class BookingController extends Controller
 
         // Get customer phone number
         $customerPhone = $booking->user->phone;
+        $customerEmail = $booking->user->email;
 
-        // Format phone number (remove leading 0 if exists and add 62)
-        $formattedPhone = preg_replace('/^0/', '62', $customerPhone);
+        // Format phone number properly
+        $formattedPhone = $this->formatPhoneNumber($customerPhone);
 
         // Get admin phone from config
-        $adminPhone = env('ADMIN_PHONE', '6281234567890');
+        $adminPhone = env('ADMIN_PHONE', '6285763189029');
 
         // Create WhatsApp confirmation message
-        $message = "Pembayaran Anda untuk booking #{$booking->id} telah berhasil diverifikasi.";
-        $message .= "\n\nSilakan cek di: Profile -> Transaksi Saya -> Cetak Resi";
-        $message .= "\n\nHubungi admin di: " . $adminPhone . " jika ada pertanyaan.";
+        $message = "Halo " . $booking->user->name . ",\n\n";
+        $message .= "Pembayaran Anda untuk booking #{$booking->id} telah berhasil diverifikasi.\n\n";
+        $message .= "Detail Booking:\n";
+        $message .= "Paket: " . $booking->detail_paket->pilihpaket->nama_paket . "\n";
+        $message .= "Tanggal: " . \Carbon\Carbon::parse($booking->waktu_mulai)->translatedFormat('d F Y') . "\n";
+        $message .= "Waktu: " . \Carbon\Carbon::parse($booking->waktu_mulai)->format('H:i') . " - " . \Carbon\Carbon::parse($booking->waktu_selesai)->format('H:i') . "\n\n";
+        $message .= "Silakan cek di: Profile -> Transaksi Saya -> Cetak Resi\n\n";
+        $message .= "Hubungi admin di: " . $adminPhone . " jika ada pertanyaan.";
 
         // URL encode the message
         $encodedMessage = urlencode($message);
@@ -132,10 +140,43 @@ class BookingController extends Controller
         // Create WhatsApp deep link
         $whatsappUrl = "https://wa.me/{$formattedPhone}?text={$encodedMessage}";
 
+        // Send email notification
+        try {
+            Mail::to($customerEmail)
+                ->send(new \App\Mail\PaymentAcceptedMail($booking));
+        } catch (\Exception $e) {
+            Log::error('Failed to send acceptance email: ' . $e->getMessage());
+        }
+
         return response()->json([
             'message' => 'Status pembayaran berhasil diubah',
-            'whatsapp_url' => $whatsappUrl
+            'whatsapp_url' => $whatsappUrl,
+            'formatted_phone' => $formattedPhone // For debugging
         ]);
+    }
+
+    // Helper function to format phone numbers
+    private function formatPhoneNumber($phone)
+    {
+        // Remove all non-digit characters
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+
+        // If starts with '0', replace with '62'
+        if (substr($phone, 0, 1) === '0') {
+            $phone = '62' . substr($phone, 1);
+        }
+
+        // If starts with '+62', remove the '+'
+        if (substr($phone, 0, 3) === '+62') {
+            $phone = '62' . substr($phone, 3);
+        }
+
+        // If doesn't start with country code, add '62'
+        if (substr($phone, 0, 2) !== '62') {
+            $phone = '62' . $phone;
+        }
+
+        return $phone;
     }
 
     /**
@@ -147,11 +188,11 @@ class BookingController extends Controller
             'reason' => 'required|string'
         ]);
 
-        // We don't change the status to rejected, we keep it as pending
         $booking->update(['status_pembayaran' => 'rejected']);
 
         // Get customer phone number
         $customerPhone = $booking->user->phone;
+        $customerEmail = $booking->user->email;
 
         // Format phone number (remove leading 0 if exists and add 62)
         $formattedPhone = preg_replace('/^0/', '62', $customerPhone);
@@ -169,6 +210,14 @@ class BookingController extends Controller
 
         // Create WhatsApp deep link
         $whatsappUrl = "https://wa.me/{$formattedPhone}?text={$encodedMessage}";
+
+        // Send email notification
+        try {
+            Mail::to($customerEmail)
+                ->send(new \App\Mail\PaymentRejectedMail($booking, $request->reason));
+        } catch (\Exception $e) {
+            Log::error('Failed to send rejection email: ' . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Pemberitahuan penolakan berhasil dikirim',

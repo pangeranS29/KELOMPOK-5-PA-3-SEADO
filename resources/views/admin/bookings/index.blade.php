@@ -248,8 +248,22 @@
                                     _token: '{{ csrf_token() }}'
                                 },
                                 success: function(response) {
+                                    // Debugging - log the response
+                                    console.log('WhatsApp URL:', response.whatsapp_url);
+                                    console.log('Formatted Phone:', response
+                                        .formatted_phone);
+
                                     // Open WhatsApp with confirmation message
-                                    window.open(response.whatsapp_url, '_blank');
+                                    if (response.whatsapp_url) {
+                                        // Create a temporary link to force the popup
+                                        const link = document.createElement('a');
+                                        link.href = response.whatsapp_url;
+                                        link.target = '_blank';
+                                        link.rel = 'noopener noreferrer';
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }
 
                                     Swal.fire({
                                         title: 'Berhasil!',
@@ -261,9 +275,12 @@
                                     $('#previewModal').addClass('hidden');
                                 },
                                 error: function(error) {
+                                    console.error('Error:', error);
                                     Swal.fire({
                                         title: 'Error!',
-                                        text: 'Terjadi kesalahan',
+                                        text: 'Terjadi kesalahan: ' + (error
+                                            .responseJSON?.message ||
+                                            'Unknown error'),
                                         icon: 'error',
                                         confirmButtonText: 'OK'
                                     });
