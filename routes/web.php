@@ -46,7 +46,7 @@ Route::name('front.')->group(function () {
     });
 
     // Authenticated routes (require login)
-    Route::middleware(['auth', 'verified'])->group(function () {
+    // Route::middleware(['auth', 'verified'])->group(function () {
 
         // Payment routes
         Route::get('/payment/success/{bookingId}', [PaymentController::class, 'success'])->name('payment.success');
@@ -77,7 +77,7 @@ Route::name('front.')->group(function () {
         Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
         Route::get('/api/payments/latest', [FrontBeritaController::class, 'latestPayments'])->name('api.payments.latest');
         Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
-    });
+    // });
 });
 
 /*
