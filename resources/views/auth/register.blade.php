@@ -6,7 +6,7 @@
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('register') }}" id="registerForm">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
             <div>
@@ -86,7 +86,7 @@
                     {{ __('Sudah Punya Akun?') }}
                 </a>
 
-                <x-button class="ms-4" id="submitButton">
+                <x-button class="ms-4">
                     {{ __('Register') }}
                 </x-button>
             </div>
