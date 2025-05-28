@@ -87,7 +87,7 @@ Route::name('front.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified', // This ensures admin users must verify their email
+     // 'verified', This ensures admin users must verify their email
     // You might want to add an 'admin' role check here if you have role management
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
