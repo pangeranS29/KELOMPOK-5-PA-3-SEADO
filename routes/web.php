@@ -36,8 +36,6 @@ Route::get('/email/verify', function () {
 Route::name('front.')->group(function () {
     // Public routes (no auth required)
 
-      Route::get('/', [LandingController::class, 'index'])->name('index');
-        Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
     // Berita Routes (public)
     Route::prefix('berita')->name('berita.')->group(function () {
@@ -46,7 +44,11 @@ Route::name('front.')->group(function () {
     });
 
     // Authenticated routes (require login)
-    // Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware(['auth', 'verified'])->group(function () {
+
+
+      Route::get('/', [LandingController::class, 'index'])->name('index');
+        Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
         // Payment routes
         Route::get('/payment/success/{bookingId}', [PaymentController::class, 'success'])->name('payment.success');
@@ -77,7 +79,7 @@ Route::name('front.')->group(function () {
         Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
         Route::get('/api/payments/latest', [FrontBeritaController::class, 'latestPayments'])->name('api.payments.latest');
         Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
-    // });
+    });
 });
 
 /*
@@ -88,7 +90,7 @@ Route::name('front.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-     // 'verified', This ensures admin users must verify their email
+     'verified', // This ensures admin users must verify their email
     // You might want to add an 'admin' role check here if you have role management
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
