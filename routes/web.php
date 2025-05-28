@@ -36,6 +36,8 @@ Route::get('/email/verify', function () {
 Route::name('front.')->group(function () {
     // Public routes (no auth required)
 
+      Route::get('/', [LandingController::class, 'index'])->name('index');
+        Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
     // Berita Routes (public)
     Route::prefix('berita')->name('berita.')->group(function () {
@@ -45,8 +47,7 @@ Route::name('front.')->group(function () {
 
     // Authenticated routes (require login)
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/', [LandingController::class, 'index'])->name('index');
-        Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
+
         // Payment routes
         Route::get('/payment/success/{bookingId}', [PaymentController::class, 'success'])->name('payment.success');
         Route::get('/payment/{bookingId}', [PaymentController::class, 'index'])->name('payment');
