@@ -43,11 +43,11 @@ Route::name('front.')->group(function () {
         Route::get('/{slug}', [FrontBeritaController::class, 'show'])->name('show');
     });
 
+     Route::get('/', [LandingController::class, 'index'])->name('index');
+
     // Authenticated routes (require login)
     Route::middleware(['auth', 'verified'])->group(function () {
 
-
-      Route::get('/', [LandingController::class, 'index'])->name('index');
         Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
         // Payment routes
