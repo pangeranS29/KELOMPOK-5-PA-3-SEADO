@@ -272,7 +272,7 @@
                                         <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                             <i class="fa-solid fa-user text-white"></i>
                                         </div>
-                                        <span class="font-medium">{{ Auth::user()->name }}</span>
+                                        <span class="font-medium"></span>
                                         <svg class="w-4 h-4 transition-transform duration-200"
                                             :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">

@@ -14,7 +14,7 @@
                 <h2 class="text-4xl md:text-6xl font-bold uppercase text-white mb-4">
                     <strong>THE BEST MOMENT</strong>
                 </h2>
-                <h3 class="text-2xl md:text-4xl font-semibold text-yellow-400 mb-6">SEADO SAFARI SAMOSIR</h3>
+                <h3 class="text-2xl md:text-4xl font-semibold text-yellow-400 mb-6">SEADOO SAFARI SAMOSIR</h3>
                 <p class="text-lg md:text-xl text-white mb-8">
                     Amazing water tourism. You won't find anywhere else.<br>
                     NEW JOURNEY, NEW STORY
