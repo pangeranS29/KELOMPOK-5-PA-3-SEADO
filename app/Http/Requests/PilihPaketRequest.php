@@ -38,15 +38,19 @@ class PilihPaketRequest extends FormRequest
      */
     public function messages(): array
     {
-        return [
+         return [
             'nama_paket.required' => 'Judul paket wajib diisi.',
             'nama_paket.max' => 'Judul paket tidak boleh lebih dari 255 karakter.',
             'harga.required' => 'Harga paket wajib diisi.',
             'harga.integer' => 'Harga paket harus berupa angka.',
             'harga.min' => 'Harga paket tidak boleh kurang dari 0.',
             'deskripsi.string' => 'Deskripsi paket harus berupa teks.',
-            'jumlah_jetski.required' => 'stok paket wajib diisi.',
-            'jumlah_jetski.integer' => 'stok paket harus berupa angka.',
+            'jumlah_jetski.required' => 'Stok paket wajib diisi.',
+            'jumlah_jetski.integer' => 'Stok paket harus berupa angka.',
+            'jumlah_jetski.min' => 'Stok paket tidak boleh kurang dari 0.',
+            'durasi.required' => 'Durasi wajib diisi.',
+            'durasi.integer' => 'Durasi harus berupa angka.',
+            'durasi.min' => 'Durasi tidak boleh kurang dari 0.',
         ];
     }
 }
