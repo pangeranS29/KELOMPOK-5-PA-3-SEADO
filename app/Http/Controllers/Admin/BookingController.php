@@ -48,7 +48,7 @@ class BookingController extends Controller
                         data-image="' . asset('storage/' . $booking->bukti_pembayaran) . '"
                         data-status="' . $booking->status_pembayaran . '"
                         data-phone="' . ($booking->user ? $booking->user->phone : '') . '">
-                        <i class="fas fa-eye mr-1"></i> Preview
+                        <i class="fas fa-eye mr-1"></i> Tampilkan
                     </button>';
                 })
 

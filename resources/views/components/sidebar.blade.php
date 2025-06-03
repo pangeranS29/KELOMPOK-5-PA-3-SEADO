@@ -27,7 +27,7 @@
 
             <li>
                 <a href="{{ route('admin.pilihpakets.index') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.pilihpakets.index') ? 'bg-gray-700' : '' }}">
-                    Pilih Paket Jetski
+                    Tambah Paket Jetski
                 </a>
             </li>
             <li>
@@ -37,13 +37,13 @@
             </li>
             <li>
                 <a href="{{ route('admin.bookings.index') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.bookings.index') ? 'bg-gray-700' : '' }}">
-                    Booking
+                    Cek Booking
                 </a>
             </li>
 
             <li>
                 <a href="{{ route('admin.beritas.index') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.news.*') ? 'bg-gray-700' : '' }}">
-                    Berita
+                    Buat Berita
                 </a>
             </li>
 
@@ -68,7 +68,7 @@
             <ul class="space-y-2">
                 <li>
                     <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('profile.show') ? 'bg-gray-700' : '' }}">
-                        Profile
+                        Akun
                     </a>
                 </li>
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -82,7 +82,7 @@
                     <form method="POST" action="{{ route('logout') }}" x-data>
                         @csrf
                         <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-700">
-                            Log Out
+                           Keluar
                         </button>
                     </form>
                 </li>

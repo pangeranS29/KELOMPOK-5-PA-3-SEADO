@@ -14,7 +14,7 @@
                         <div class="flex items-center mt-2 text-sm text-gray-500">
                             <span class="mr-3">Status:
                                 @if($berita->dipublikasikan)
-                                    <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Published</span>
+                                    <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Publikasi</span>
                                 @else
                                     <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-200 rounded-full">Draft</span>
                                 @endif
