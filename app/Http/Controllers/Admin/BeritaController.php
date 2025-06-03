@@ -60,22 +60,18 @@ class BeritaController extends Controller
     public function store(BeritaRequest $request)
     {
         $data = $request->validated();
-        $data['slug'] = Str::slug($data['judul']);
+    $data['slug'] = Str::slug($data['judul']);
 
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
+    if ($request->hasFile('gambar')) {
+        $file = $request->file('gambar');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('storage/berita'), $filename);
+        $data['gambar'] = 'berita/' . $filename;
+    }
 
-            // Pindahkan ke public/berita
-            $file->move(public_path('berita'), $filename);
+    Berita::create($data);
 
-            // Simpan nama file ke DB
-            $data['gambar'] = $filename;
-        }
-
-        Berita::create($data);
-
-        return redirect()->route('admin.beritas.index')->with('success', 'Berita berhasil ditambahkan!');
+    return redirect()->route('admin.beritas.index')->with('success', 'Berita berhasil ditambahkan!');
     }
 
     public function show(Berita $berita)
@@ -90,25 +86,24 @@ class BeritaController extends Controller
 
     public function update(BeritaRequest $request, Berita $berita)
     {
-        $data = $request->validated();
-        $data['slug'] = Str::slug($data['judul']);
+         $data = $request->validated();
+    $data['slug'] = Str::slug($data['judul']);
 
-        if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($berita->gambar && file_exists(public_path('berita/' . $berita->gambar))) {
-                File::delete(public_path('berita/' . $berita->gambar));
-            }
-
-            $file = $request->file('gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('berita'), $filename);
-
-            $data['gambar'] = $filename;
+    if ($request->hasFile('gambar')) {
+        // Hapus gambar lama jika ada
+        if ($berita->gambar && file_exists(public_path('storage/' . $berita->gambar))) {
+            unlink(public_path('storage/' . $berita->gambar));
         }
 
-        $berita->update($data);
+        $file = $request->file('gambar');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('storage/berita'), $filename);
+        $data['gambar'] = 'berita/' . $filename;
+    }
 
-        return redirect()->route('admin.beritas.index')->with('success', 'Berita berhasil diperbarui!');
+    $berita->update($data);
+
+    return redirect()->route('admin.beritas.index')->with('success', 'Berita berhasil diperbarui!');
     }
 
     public function destroy(Berita $berita)
