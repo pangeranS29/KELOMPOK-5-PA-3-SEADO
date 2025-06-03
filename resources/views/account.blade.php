@@ -39,7 +39,8 @@
                     <div class="space-y-4 md:space-y-6">
                         <!-- Table Header -->
                         <center>
-                            <div class="bg-gray-700 p-3 md:p-4 rounded-lg grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-2">
+                            <div
+                                class="bg-gray-700 p-3 md:p-4 rounded-lg grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-2">
                                 <div class="col-span-4">
                                     <span class="font-semibold text-white">Paket & Waktu</span>
                                 </div>
@@ -85,65 +86,71 @@
 
 
                                 <!-- Payment Status -->
-                                <div class="md:col-span-3 ">
+                                <div class="md:col-span-3 flex items-center justify-center">
                                     @if ($booking->status_pembayaran === 'pending' && $booking->metode_pembayaran && empty($booking->bukti_pembayaran))
                                         <a href="{{ route('front.payment.show', $booking->id) }}"
-                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm">Lanjutkan
-                                            Pembayaran</a>
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-xs text-center">
+                                            Lanjutkan Pembayaran
+                                        </a>
                                     @elseif ($booking->status_pembayaran === 'pending')
                                         <a href="{{ route('front.payment', $booking->id) }}"
-                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm">Bayar
-                                            Sekarang</a>
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Bayar Sekarang
+                                        </a>
                                     @elseif ($booking->status_pembayaran === 'menunggu_konfirmasi')
-                                        <span class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm">Menunggu
-                                            Konfirmasi</span>
+                                        <span class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Menunggu Konfirmasi
+                                        </span>
                                     @elseif ($booking->status_pembayaran === 'canceled')
-                                        <span
-                                            class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm">Dibatalkan</span>
+                                        <span class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Dibatalkan
+                                        </span>
                                     @elseif ($booking->status_pembayaran === 'expired')
-                                        <span
-                                            class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm">Kadaluarsa</span>
+                                        <span class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Kadaluarsa
+                                        </span>
                                     @elseif ($booking->status_pembayaran === 'success')
-                                        <span class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm">Lunas</span>
+                                        <span class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Lunas
+                                        </span>
                                     @elseif ($booking->status_pembayaran === 'rejected')
                                         <a href="{{ route('front.payment', $booking->id) }}"
-                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm">Bayar
-                                            Kembali</a>
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                            Bayar Kembali
+                                        </a>
                                     @elseif ($booking->status_pembayaran === 'meminta_refund')
-                                        <span class="bg-purple-500 text-white py-1 px-3 rounded-lg text-sm">Permintaan
-                                            Refund</span>
+                                        <span class="bg-purple-500 text-white py-1 px-3 rounded-lg text-xs text-center">
+                                            Permintaan Refund
+                                        </span>
                                     @endif
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="md:col-span-3 ">
+                                <div class="md:col-span-3 flex flex-col items-center space-y-2 justify-center">
                                     @if ($booking->status_pembayaran === 'success' && now()->lte($booking->waktu_selesai))
                                         <a href="{{ route('front.cetak.resi', $booking->id) }}"
-                                            class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap"
+                                            class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-xs whitespace-nowrap w-full text-center"
                                             target="_blank">
                                             Cetak Resi
                                         </a>
                                         <button onclick="showRefundModal('{{ $booking->id }}')"
-                                            class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
+                                            class="bg-red-500 text-white py-1 px-3 rounded-lg text-xs whitespace-nowrap w-full">
                                             Minta Refund
                                         </button>
                                     @elseif ($booking->status_pembayaran === 'refunded')
                                         <a href="{{ asset('storage/' . $booking->refund_proof) }}" target="_blank"
-                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-xs whitespace-nowrap w-full text-center">
                                             Lihat Bukti Refund
                                         </a>
                                     @elseif ($booking->status_pembayaran === 'success' && now()->gt($booking->waktu_selesai))
-                                        <center>
                                         <span
-                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
+                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed w-full text-center"
                                             title="Masa refund sudah habis">
                                             Minta Refund
                                         </span>
-                                    </center>
                                     @elseif ($booking->status_pembayaran === 'meminta_refund')
-
                                         <span
-                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
+                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed w-full text-center"
                                             title="Anda sudah mengajukan refund">
                                             Minta Refund
                                         </span>
