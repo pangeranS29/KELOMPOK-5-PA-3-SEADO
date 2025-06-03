@@ -87,22 +87,7 @@
 
 </x-guest-layout>
 
-<div class="mb-6">
-    <label for="password" class="block text-gray-400 mb-2">Kata Sandi</label>
-    <div class="relative">
-        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="fas fa-lock text-gray-500"></i>
-        </span>
-        <input id="password" name="password" type="password" required
-            class="w-full pl-10 pr-10 p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-yellow-500 transition duration-300 @error('password') border-red-500 @enderror">
-        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none" onclick="togglePassword()">
-            <i id="eye-icon" class="fas fa-eye text-gray-500 hover:text-yellow-500 cursor-pointer"></i>
-        </button>
-    </div>
-    @error('password')
-        <span class="text-sm text-red-500">{{ $message }}</span>
-    @enderror
-</div>
+
 
 <script>
     function togglePassword() {
