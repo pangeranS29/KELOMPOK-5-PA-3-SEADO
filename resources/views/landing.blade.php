@@ -30,8 +30,8 @@
         <section id="packages" class="bg-black py-5">
             <div class="container">
                 <header class="mb-5 text-center">
-                    <h1 class="text-lg font-semibold text-white">DESTINATION</h1>
-                    <h2 class="text-4xl font-bold text-warning">POPULAR PLACE</h2>
+                    <h1 class="text-lg font-semibold text-white">DESTINASI</h1>
+                    <h2 class="text-4xl font-bold text-warning">TUJUAN WISATA</h2>
                 </header>
 
                 <!-- Carousel -->
@@ -79,8 +79,8 @@
 
                                                         <!-- Tombol Book Now -->
                                                         <a href="{{ route('front.detail', $detail_paket->id) }}"
-                                                            class="bg-yellow-500 hover:bg-yellow-600 text-black text-sm font-semibold px-3 py-1 rounded-md transition">
-                                                            Pesan Sekarang
+                                                            class="bg-yellow-500 hover:bg-yellow-600 text-black text-sm font-semibold px-6 py-1 rounded-md transition">
+                                                            Pesan
                                                         </a>
                                                     </div>
                                                 </div>

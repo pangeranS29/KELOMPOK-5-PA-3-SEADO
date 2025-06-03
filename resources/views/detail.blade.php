@@ -60,12 +60,12 @@
                                     @auth
                                         <a href="{{ route('front.checkout', $detail_paket->id) }}"
                                             class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 rounded-lg transition-colors duration-300">
-                                            Pesan Sekarang
+                                            Pesan
                                         </a>
                                     @else
                                         <a href="{{ route('login', ['redirect_to' => route('front.detail', $detail_paket->id)]) }}"
                                             class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 rounded-lg transition-colors duration-300">
-                                            Pesan Sekarang
+                                            Pesan
                                         </a>
                                     @endauth
                                 </div>
@@ -108,7 +108,7 @@
                         <!-- Durasi -->
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-gray-400">
-                                {{ $similiarItem->pilihpaket ? $similiarItem->pilihpaket->durasi : '-' }}/Minutes
+                                {{ $similiarItem->pilihpaket ? $similiarItem->pilihpaket->durasi : '-' }}/Menit
                             </span>
                         </div>
 
@@ -123,13 +123,13 @@
                             <!-- Tombol Book Now -->
                             @auth
                                 <a href="{{ route('front.detail', $similiarItem->id) }}"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold px-3 py-1 rounded-md transition">
-                                    Pesan Sekarang
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold px-6 py-1 rounded-md transition">
+                                    Pesan
                                 </a>
                             @else
                                 <a href="{{ route('login', ['redirect_to' => route('front.detail', $similiarItem->id)]) }}"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold px-3 py-1 rounded-md transition">
-                                    Pesan Sekarang
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold px-6 py-1 rounded-md transition">
+                                    Pesan
                                 </a>
                             @endauth
                         </div>
