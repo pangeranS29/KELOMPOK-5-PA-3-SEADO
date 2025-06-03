@@ -12,15 +12,15 @@
         <div class="container relative z-20 h-full flex flex-col justify-center items-center text-center px-4">
             <div data-aos="fade-up" data-aos-duration="1000" class="max-w-3xl">
                 <h2 class="text-4xl md:text-6xl font-bold uppercase text-white mb-4">
-                    <strong>THE BEST MOMENT</strong>
+                    <strong>MOMENT SERU DIMULAI </strong>
                 </h2>
                 <h3 class="text-2xl md:text-4xl font-semibold text-yellow-400 mb-6">SEADOO SAFARI SAMOSIR</h3>
                 <p class="text-lg md:text-xl text-white mb-8">
-                    Amazing water tourism. You won't find anywhere else.<br>
-                    NEW JOURNEY, NEW STORY
+                    Rasakan petualangan air yang beda dari biasanya.<br>
+                    LANGKAH BARU,CERITA BARU !
                 </p>
                 <a href="#packages" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
-                    Explore Packages
+                    Yuk Mulai !
                 </a>
             </div>
         </div>

@@ -149,4 +149,20 @@ class BeritaController extends Controller
 
         return response()->json($payments);
     }
+
+    public function markAsRead(Request $request, Berita $berita)
+{
+    $user = $request->user();
+
+    // Cek apakah relasi sudah ada
+    if ($user->beritas()->where('berita_id', $berita->id)->exists()) {
+        // Update pivot jika sudah ada
+        $user->beritas()->updateExistingPivot($berita->id, ['dibaca' => true]);
+    } else {
+        // Attach dengan dibaca=true jika belum ada
+        $user->beritas()->attach($berita->id, ['dibaca' => true]);
+    }
+
+    return response()->json(['success' => true]);
+}
 }

@@ -176,8 +176,10 @@
 
                                             <!-- Tampilkan Berita -->
                                             <template x-for="berita in notifications" :key="'berita-' + berita.id">
-                                                <a :href="'{{ route('front.berita.show', '') }}/' + berita.slug"
+                                                <a @click.prevent="markAsRead(berita)"
+                                                    :href="'{{ route('front.berita.show', '') }}/' + berita.slug"
                                                     class="flex items-start px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0">
+                                                    <!-- Konten notifikasi tetap sama -->
                                                     <div class="flex-shrink-0 mr-3">
                                                         <img :src="berita.gambar" :alt="berita.judul"
                                                             class="h-12 w-12 object-cover rounded-lg">
@@ -193,7 +195,6 @@
                                                     </template>
                                                 </a>
                                             </template>
-
                                             <!-- Tampilkan Pembayaran -->
                                             <template x-for="payment in payments" :key="'payment-' + payment.id">
                                                 <div
@@ -559,9 +560,35 @@
                         });
                 },
 
+                markAsRead(berita) {
+                    // Kirim request ke server untuk menandai sebagai dibaca
+                    fetch('/berita/mark-as-read/' + berita.id, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Update status di frontend
+                                berita.dibaca = true;
+                                this.calculateUnreadCount();
+
+                                // Redirect ke halaman berita setelah 300ms (memberi waktu untuk request selesai)
+                                setTimeout(() => {
+                                    window.location.href = '{{ route('front.berita.show', '') }}/' + berita
+                                        .slug;
+                                }, 300);
+                            }
+                        });
+                },
+
                 calculateUnreadCount() {
                     this.unreadCount = this.notifications.filter(berita => !berita.dibaca).length;
                 }
+
+
             }
         }
 

@@ -85,10 +85,6 @@
                                     @elseif ($booking->status_pembayaran === 'meminta_refund')
                                         <span class="bg-purple-500 text-white py-1 px-3 rounded-lg text-sm">Permintaan
                                             Refund</span>
-                                    @elseif ($booking->status_pembayaran === 'refunded')
-                                        <span class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm">Sudah
-                                            Direfund</span>
-                                    @endif
 
                                     {{-- ID Pesanan --}}
                                     <div class="text-xs md:text-base text-white">

@@ -79,6 +79,7 @@ Route::name('front.')->group(function () {
         Route::get('/api/berita/latest', [FrontBeritaController::class, 'latest'])->name('api.berita.latest');
         Route::get('/api/payments/latest', [FrontBeritaController::class, 'latestPayments'])->name('api.payments.latest');
         Route::post('/api/berita/mark-all-read', [FrontBeritaController::class, 'markAllAsRead'])->name('api.berita.markAllAsRead');
+        Route::post('/berita/mark-as-read/{berita}', [FrontBeritaController::class, 'markAsRead'])->name('api.berita.mark-as-read');
     });
 });
 

@@ -34,24 +34,7 @@
                             {!! nl2br(e($berita->konten)) !!}
                         </div>
 
-                        <!-- Share Buttons -->
-                        <div class="mt-12 pt-6 border-t border-gray-800">
-                            <h4 class="text-white text-lg font-semibold mb-4">Bagikan Berita Ini</h4>
-                            <div class="flex space-x-4">
-                                <a href="#" class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="#" class="bg-blue-400 text-white p-2 rounded-full hover:bg-blue-500 transition">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="#" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                                <a href="#" class="bg-gray-700 text-white p-2 rounded-full hover:bg-gray-800 transition">
-                                    <i class="fas fa-link"></i>
-                                </a>
-                            </div>
-                        </div>
+
                     </article>
                 </div>
 
