@@ -22,7 +22,8 @@
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
                     required />
-                <p id="emailError" class="mt-1 text-sm text-red-600 hidden">Harus menggunakan email Google yang valid (contoh: @gmail.com) yang sudah terdaftar</p>
+                <p id="emailError" class="mt-1 text-sm text-red-600 hidden">Harus menggunakan email Google yang valid
+                    (contoh: @gmail.com) yang sudah terdaftar</p>
                 @error('email')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -32,25 +33,46 @@
                 <x-label for="phone" value="{{ __('No Telepon') }}" />
                 <x-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')"
                     required autocomplete="tel" maxlength="12" />
-                <p id="phoneError" class="mt-1 text-sm text-red-600 hidden">Nomor telepon harus berupa angka dan maksimal 12 digit</p>
+                <p id="phoneError" class="mt-1 text-sm text-red-600 hidden">Nomor telepon harus berupa angka dan
+                    maksimal 12 digit</p>
                 @error('phone')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 relative">
                 <x-label for="password" value="{{ __('Kata Sandi') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                    autocomplete="new-password" />
+                <div class="relative">
+                    <x-input id="password" class="block mt-1 w-full pl-10 pr-10" type="password" name="password"
+                        required autocomplete="new-password" />
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <button type="button"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                        onclick="togglePassword('password')">
+                        <i id="password-eye" class="fas fa-eye"></i>
+                    </button>
+                </div>
                 @error('password')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 relative">
                 <x-label for="password_confirmation" value="{{ __('Konfirmasi Kata Sandi') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                    name="password_confirmation" required autocomplete="new-password" />
+                <div class="relative">
+                    <x-input id="password_confirmation" class="block mt-1 w-full pl-10 pr-10" type="password"
+                        name="password_confirmation" required autocomplete="new-password" />
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <button type="button"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                        onclick="togglePassword('password_confirmation')">
+                        <i id="password_confirmation-eye" class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
@@ -94,6 +116,20 @@
     </x-authentication-card>
 
     <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const eyeIcon = document.getElementById(`${fieldId}-eye`);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const emailInput = document.getElementById('email');
             const emailError = document.getElementById('emailError');
@@ -222,13 +258,27 @@
     <style>
         /* Animasi shake untuk input error */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-5px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(5px);
+            }
         }
+
         .animate-shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            border-color: #f87171; /* Warna merah untuk border */
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+            border-color: #f87171;
+            /* Warna merah untuk border */
         }
     </style>
 </x-guest-layout>
