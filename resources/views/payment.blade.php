@@ -176,18 +176,37 @@
                                                 </h2>
 
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <!-- Manual Transfer -->
+                                                    <!-- BRI Bank -->
                                                     <div class="relative">
-                                                        <input type="radio" id="manual_transfer" name="metode_pembayaran"
-                                                            value="manual_transfer"
+                                                        <input type="radio" id="bri_bank" name="metode_pembayaran"
+                                                            value="bri_bank"
                                                             class="peer absolute inset-0 opacity-0 cursor-pointer" required
-                                                            onclick="showPaymentInstruction('manual_transfer')">
-                                                        <label for="manual_transfer"
+                                                            onclick="showPaymentInstruction('bri_bank')">
+                                                        <label for="bri_bank"
                                                             class="flex flex-col items-center justify-center bg-gray-700 border-2 border-gray-600 rounded-xl p-4 hover:border-yellow-400 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50 transition-all">
-                                                            <img src="{{ asset('svgs/bank.svg') }}" alt="Manual Transfer"
-                                                                class="h-10 mb-2">
-                                                            <span class="text-white font-medium">Transfer Bank</span>
-                                                            <span class="text-gray-400 text-xs">BRI / Bank SUMUT</span>
+                                                            <div class="flex items-center justify-center w-full mb-2">
+                                                                <img src="{{ asset('svgs/bank-bri.svg') }}" alt="BRI Bank"
+                                                                    class="h-8 mr-2">
+                                                                <span class="text-white font-medium">BRI</span>
+                                                            </div>
+                                                            <span class="text-gray-400 text-xs">Bank Rakyat Indonesia</span>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Bank SUMUT -->
+                                                    <div class="relative">
+                                                        <input type="radio" id="bank_sumut" name="metode_pembayaran"
+                                                            value="bank_sumut"
+                                                            class="peer absolute inset-0 opacity-0 cursor-pointer" required
+                                                            onclick="showPaymentInstruction('bank_sumut')">
+                                                        <label for="bank_sumut"
+                                                            class="flex flex-col items-center justify-center bg-gray-700 border-2 border-gray-600 rounded-xl p-4 hover:border-yellow-400 peer-checked:border-yellow-400 peer-checked:ring-2 peer-checked:ring-yellow-400/50 transition-all">
+                                                            <div class="flex items-center justify-center w-full mb-2">
+                                                                <img src="{{ asset('svgs/bank-sumut.svg') }}"
+                                                                    alt="Bank SUMUT" class="h-8 mr-2">
+                                                                <span class="text-white font-medium">Bank SUMUT</span>
+                                                            </div>
+                                                            <span class="text-gray-400 text-xs">Bank Sumatera Utara</span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -462,56 +481,92 @@
             const title = document.getElementById('payment-modal-title');
             const content = document.getElementById('payment-modal-content');
 
-            if (method === 'manual_transfer') {
-                title.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
-                    <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
-                </svg>
-                Instruksi Transfer Bank
-            `;
+            let bankDetails = {};
 
-                content.innerHTML = `
-                <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                    <p>Silakan transfer ke salah satu rekening berikut:</p>
+            if (method === 'bri_bank') {
+                bankDetails = {
+                    name: 'BRI (Bank Rakyat Indonesia)',
+                    logo: '{{ asset('svgs/bank-bri.svg') }}',
+                    accountNumber: '208201010102569',
+                    accountName: 'Seado Safari Samosir',
+                    transferGuide: [
+                        'ATM BRI: Transfer > Antar BRI > Masukkan nomor rekening > Konfirmasi',
+                        'Mobile Banking BRI: Transfer > Antar BRI > Masukkan nomor rekening > Konfirmasi',
+                        'Bank Lain: Transfer > Antar Bank > Pilih BRI > Masukkan nomor rekening > Konfirmasi'
+                    ]
+                };
+            } else if (method === 'bank_sumut') {
+                bankDetails = {
+                    name: 'Bank SUMUT (Bank Sumatera Utara)',
+                    logo: '{{ asset('svgs/bank-sumut.svg') }}',
+                    accountNumber: '241.01.04.002036-3',
+                    accountName: 'Seado Safari Samosir',
+                    transferGuide: [
+                        'ATM Bank SUMUT: Transfer > Rekening Bank SUMUT > Masukkan nomor rekening > Konfirmasi',
+                        'Mobile Banking: Transfer > Sesama Bank SUMUT > Masukkan nomor rekening > Konfirmasi',
+                        'Bank Lain: Transfer > Antar Bank > Pilih Bank SUMUT > Masukkan nomor rekening > Konfirmasi'
+                    ]
+                };
+            }
 
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <div class="flex items-center mb-2">
-                            <div>
-                                <p class="font-bold text-yellow-400">Bank BRI</p>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 p-3 rounded">
-                            <p class="text-sm text-gray-400">Nomor Rekening</p>
-                            <p class="font-mono text-lg">208201010102569</p>
-                            <p class="text-sm mt-1">a/n Seado Safari Samosir</p>
-                        </div>
-                    </div>
+            title.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+            <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
+        </svg>
+        Instruksi Transfer ${bankDetails.name}
+    `;
 
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <div class="flex items-center mb-2">
-                            <div>
-                                <p class="font-bold text-yellow-400">Bank SUMUT</p>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 p-3 rounded">
-                            <p class="text-sm text-gray-400">Nomor Rekening</p>
-                            <p class="font-mono text-lg">241.01.04.002036-3</p>
-                            <p class="text-sm mt-1">a/n Seado Safari Samosir</p>
-                        </div>
-                    </div>
+            content.innerHTML = `
+        <div class="space-y-6 max-h-96 overflow-y-auto pr-2">
+            <div class="flex items-center justify-between bg-gray-700 p-4 rounded-lg">
+                <div>
+                    <img src="${bankDetails.logo}" alt="${bankDetails.name}" class="h-10">
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-400">Nomor Rekening</p>
+                    <p class="font-mono text-xl text-yellow-400">${bankDetails.accountNumber}</p>
+                </div>
+            </div>
 
-                    <div class="bg-gray-700/50 p-4 rounded-lg border border-yellow-400/30">
-                        <h4 class="font-semibold text-yellow-400 mb-2">Petunjuk Pembayaran:</h4>
-                        <ol class="list-decimal list-inside space-y-1 text-sm">
-                            <li>Transfer sesuai nominal: <strong>Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</strong></li>
-                            <li>Setelah transfer, silahkan tutup  dan Anda akan diminta untuk mengupload bukti pembayaran</li>
-                            <li>Pesanan akan diverifikasi dalam 1x24 jam</li>
-                        </ol>
+            <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-400 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-yellow-400 mb-1">Informasi Penting</h4>
+                        <p class="text-sm">Pastikan Anda mentransfer ke rekening atas nama <span class="font-bold text-white">${bankDetails.accountName}</span>.</p>
                     </div>
                 </div>
-            `;
-            }
+            </div>
+
+            <div class="bg-gray-700 p-4 rounded-lg">
+                <h4 class="font-semibold text-white mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                    </svg>
+                    Petunjuk Transfer
+                </h4>
+                <ol class="list-decimal list-inside space-y-2 text-sm">
+                    ${bankDetails.transferGuide.map(guide => `<li class="mb-1">${guide}</li>`).join('')}
+                </ol>
+            </div>
+
+            <div class="bg-yellow-400/10 border-l-4 border-yellow-400 p-4 rounded-lg">
+                <div class="flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-400 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-yellow-400 mb-1">Total Transfer</h4>
+                        <p class="text-2xl font-bold text-white">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-300 mt-1">Harap transfer sesuai nominal di atas untuk mempercepat proses verifikasi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
             modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');

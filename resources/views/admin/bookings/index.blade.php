@@ -55,6 +55,11 @@
                             className: 'text-sm text-gray-900'
                         },
                         {
+                            data: 'metode_pembayaran',
+                            name: 'metode_pembayaran',
+                            className: 'text-sm text-gray-900'
+                        },
+                        {
                             data: 'status_pembayaran',
                             name: 'status_pembayaran',
                             className: 'text-sm',
@@ -111,16 +116,16 @@
                                 return data ? 'Rp ' + Number(data).toLocaleString('id-ID') : '-';
                             }
                         },
-                        {
-                            data: 'bukti_pembayaran',
-                            name: 'bukti_pembayaran',
-                            className: 'text-sm',
-                            render: function(data) {
-                                return data ?
-                                    `<a href="/storage/${data}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">Lihat Bukti</a>` :
-                                    '-';
-                            }
-                        },
+                        // {
+                        //     data: 'bukti_pembayaran',
+                        //     name: 'bukti_pembayaran',
+                        //     className: 'text-sm',
+                        //     render: function(data) {
+                        //         return data ?
+                        //             `<a href="/storage/${data}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline">Lihat Bukti</a>` :
+                        //             '-';
+                        //     }
+                        // },
                         {
                             data: 'action',
                             name: 'action',
@@ -387,13 +392,16 @@
                                     Selesai</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Metode_Pembayaran</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status</th>
+
+
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Total Harga</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Bukti</th>
+
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Aksi</th>

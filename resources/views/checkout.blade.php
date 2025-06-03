@@ -363,8 +363,8 @@
                 const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
                 const timeDiff = selectedDateTime.getTime() - now.getTime();
 
-                if (timeDiff < 5 * 60 * 1000) {
-                    tampilkanPeringatan("Waktu yang dipilih minimal 5 menit dari sekarang.");
+                if (timeDiff < 10 * 60 * 1000) {
+                    tampilkanPeringatan("Waktu yang dipilih minimal 10 menit dari sekarang.");
                     timeInput.value = '';
                     return false;
                 }

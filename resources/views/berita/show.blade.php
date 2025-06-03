@@ -4,7 +4,6 @@
         <div class="container py-8">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 text-center md:text-left">
-                    <h1 class="text-lg font-semibold text-white">BERITA</h1>
                     <h2 class="text-4xl font-bold text-yellow-500 mb-4">{{ $berita->judul }}</h2>
                     <div class="flex items-center justify-center md:justify-start space-x-4 text-gray-400">
                         <span>
