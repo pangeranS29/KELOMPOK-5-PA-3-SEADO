@@ -13,7 +13,9 @@
 
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.bunny.net/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap">
+
     <!-- Libraries -->
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" />
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -26,6 +28,15 @@
 
     <link rel="stylesheet" href="{{ asset('css/booking.css') }}">
 
+
+    <!-- Ganti font ke Source Serif 4 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap"
+        rel="stylesheet">
+
+
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/ti-icons/css/themify-icons.css') }}">
@@ -35,10 +46,6 @@
     <!-- Plugin css for this page -->
     <link rel="stylesheet" href="{{ asset('vendors/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <!-- Scripts -->
 
@@ -60,6 +67,36 @@
 
     <!-- Pindahkan ke sebelum penutup </head> -->
     <style>
+        /* Ganti semua font ke Source Serif 4 */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        a,
+        span,
+        strong,
+        button,
+        input,
+        textarea,
+        select,
+        label,
+        li,
+        .swal2-popup,
+        .swal2-title,
+        .swal2-html-container,
+        .dataTables_wrapper {
+            font-family: 'Source Serif 4', serif !important;
+        }
+
+        /* Atur font untuk elemen khusus */
+        .font-sans {
+            font-family: 'Source Serif 4', serif !important;
+        }
+
         .swal2-confirm {
             background-color: #3085d6 !important;
         }

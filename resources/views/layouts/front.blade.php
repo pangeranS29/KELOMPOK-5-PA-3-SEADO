@@ -13,8 +13,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.bunny.net/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap">
     <!-- Libraries -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
@@ -26,7 +28,44 @@
     <script defer src="https://unpkg.com/alpinejs@3.13.0/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Tambahkan link ke Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap"
+        rel="stylesheet">
+
     <style>
+        /* Ganti semua font ke Source Serif 4 */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        a,
+        span,
+        strong,
+        button,
+        input,
+        textarea,
+        select,
+        label,
+        li {
+            font-family: 'Source Serif 4', serif !important;
+        }
+
+        /* Atur font untuk elemen khusus jika diperlukan */
+        .btn-white,
+        .nav_color,
+        .swal2-popup,
+        .swal2-title,
+        .swal2-html-container {
+            font-family: 'Source Serif 4', serif !important;
+        }
+
         .swal2-popup {
             background: #1f2937 !important;
             color: #fff !important;
