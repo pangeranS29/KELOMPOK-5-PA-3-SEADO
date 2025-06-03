@@ -137,7 +137,7 @@
                             <a href="https://www.google.com/maps/place/Seadoo+Safari+Samosir/@2.676738,98.844249,16z/data=!4m6!3m5!1s0x3031ebf3b944b9dd:0xc0b508b6a21d8075!8m2!3d2.676738!4d98.8442493!16s%2Fg%2F11vx6z7qkx?hl=en&entry=ttu"
                                 class="text-white hover:text-yellow-400 transition-colors duration-200 font-medium text-sm"
                                 target="_blank" rel="noopener noreferrer">
-                                Lokasi
+                                Maps
                             </a>
                         </div>
 
@@ -288,7 +288,7 @@
                                             <a href="{{ url('account?tab=profile') }}"
                                                 class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                                 <i class="fa-solid fa-id-badge mr-3 text-blue-500"></i>
-                                                <span>Profile</span>
+                                                <span>Profil</span>
                                             </a>
                                             <a href="{{ url('account?tab=transaction') }}"
                                                 class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200">
@@ -301,7 +301,7 @@
                                                 <button type="submit"
                                                     class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200">
                                                     <i class="fa-solid fa-right-from-bracket mr-3"></i>
-                                                    <span>Log Out</span>
+                                                    <span>Keluar</span>
                                                 </button>
                                             </form>
                                         </div>

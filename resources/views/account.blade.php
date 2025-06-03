@@ -12,21 +12,21 @@
                 <nav class="space-y-2 md:space-y-4">
                     <a href="{{ url('/account?tab=profile') }}"
                         class="flex items-center space-x-2 p-2 md:p-3 rounded-lg text-sm md:text-base {{ ($activeTab ?? '') === 'profile' ? 'bg-gray-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white' }}">
-                        <i class="fas fa-user"></i><span>Profile</span>
+                        <i class="fas fa-user"></i><span>Akun</span>
                     </a>
                     <a href="{{ url('/account?tab=transaction') }}"
                         class="flex items-center space-x-2 p-2 md:p-3 rounded-lg text-sm md:text-base {{ ($activeTab ?? '') === 'transaction' ? 'bg-gray-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white' }}">
-                        <i class="fas fa-box"></i><span>My Transaction</span>
+                        <i class="fas fa-box"></i><span>Pesanan Saya</span>
                     </a>
                     <a href="{{ url('/account?tab=reset-password') }}"
                         class="flex items-center space-x-2 p-2 md:p-3 rounded-lg text-sm md:text-base {{ ($activeTab ?? '') === 'reset-password' ? 'bg-gray-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white' }}">
-                        <i class="fas fa-key"></i><span>Reset Password</span>
+                        <i class="fas fa-key"></i><span>Ubah Kata Sandi</span>
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit"
                             class="flex items-center space-x-2 p-2 md:p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm md:text-base text-white w-full text-left">
-                            <i class="fas fa-power-off"></i><span>Logout</span>
+                            <i class="fas fa-power-off"></i><span>Keluar</span>
                         </button>
                     </form>
                 </nav>
@@ -37,10 +37,29 @@
                 @if (($activeTab ?? '') === 'transaction')
                     <h2 class="text-white text-xl font-semibold">My Transaction</h2>
                     <div class="space-y-4 md:space-y-6">
+                        <!-- Table Header -->
+                        <center>
+                            <div class="bg-gray-700 p-3 md:p-4 rounded-lg grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-2">
+                                <div class="col-span-4">
+                                    <span class="font-semibold text-white">Paket & Waktu</span>
+                                </div>
+                                <div class="col-span-2">
+                                    <span class="font-semibold text-white">ID Pesanan</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="font-semibold text-white">Status Pembayaran</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="font-semibold text-white">Aksi</span>
+                                </div>
+                            </div>
+                        </center>>
+
                         @forelse ($bookings as $booking)
                             <div
-                                class="bg-gray-700 p-3 md:p-4 rounded-lg flex flex-col md:flex-row justify-between gap-3 md:gap-4">
-                                <div class="flex items-center space-x-3 md:space-x-4">
+                                class="bg-gray-700 p-3 md:p-4 rounded-lg grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-2">
+                                <!-- Package Info -->
+                                <div class="md:col-span-4 flex items-center space-x-3 md:space-x-4">
                                     <img alt="Paket Image" class="h-8 md:h-12 rounded-full" height="50"
                                         src="{{ $booking->detail_paket->thumbnail ?? asset('images/default.jpg') }}"
                                         width="50" />
@@ -48,17 +67,25 @@
                                         <p class="font-semibold text-sm md:text-base text-white">
                                             {{ $booking->detail_paket->pilihpaket->nama_paket ?? 'Nama Paket Tidak Tersedia' }}
                                         </p>
-                                        <p class="text-xs md:text-base text-white">
+                                        <p class="text-sm md:text-base  text-white">
                                             {{ Carbon\Carbon::parse($booking->waktu_mulai)->translatedFormat('d F Y, H:i') }}
                                             -
                                             {{ Carbon\Carbon::parse($booking->waktu_selesai)->translatedFormat('d F Y, H:i') }}
                                         </p>
                                     </div>
                                 </div>
-                                <div
-                                    class="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-3 lg:space-x-4">
 
-                                    {{-- Status Pembayaran --}}
+
+                                <!-- Order ID -->
+                                <div
+                                    class="md:col-span-2 text-xs md:text-base text-white flex items-center justify-center text-center">
+                                    <p class="md:hidden font-semibold">ID Pesanan</p>
+                                    <p class="font-semibold truncate">{{ $booking->id }}</p>
+                                </div>
+
+
+                                <!-- Payment Status -->
+                                <div class="md:col-span-3 ">
                                     @if ($booking->status_pembayaran === 'pending' && $booking->metode_pembayaran && empty($booking->bukti_pembayaran))
                                         <a href="{{ route('front.payment.show', $booking->id) }}"
                                             class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm">Lanjutkan
@@ -86,44 +113,41 @@
                                         <span class="bg-purple-500 text-white py-1 px-3 rounded-lg text-sm">Permintaan
                                             Refund</span>
                                     @endif
+                                </div>
 
-                                    {{-- ID Pesanan --}}
-                                    <div class="text-xs md:text-base text-white">
-                                        <p>ID Pesanan</p>
-                                        <p class="font-semibold truncate">{{ $booking->id }}</p>
-                                    </div>
+                                <!-- Action Buttons -->
+                                <div class="md:col-span-3 ">
+                                    @if ($booking->status_pembayaran === 'success' && now()->lte($booking->waktu_selesai))
+                                        <a href="{{ route('front.cetak.resi', $booking->id) }}"
+                                            class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap"
+                                            target="_blank">
+                                            Cetak Resi
+                                        </a>
+                                        <button onclick="showRefundModal('{{ $booking->id }}')"
+                                            class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
+                                            Minta Refund
+                                        </button>
+                                    @elseif ($booking->status_pembayaran === 'refunded')
+                                        <a href="{{ asset('storage/' . $booking->refund_proof) }}" target="_blank"
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
+                                            Lihat Bukti Refund
+                                        </a>
+                                    @elseif ($booking->status_pembayaran === 'success' && now()->gt($booking->waktu_selesai))
+                                        <center>
+                                        <span
+                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
+                                            title="Masa refund sudah habis">
+                                            Minta Refund
+                                        </span>
+                                    </center>
+                                    @elseif ($booking->status_pembayaran === 'meminta_refund')
 
-                                    {{-- Action Buttons --}}
-                                    <div class="flex space-x-2">
-                                        @if ($booking->status_pembayaran === 'success' && now()->lte($booking->waktu_selesai))
-                                            <a href="{{ route('front.cetak.resi', $booking->id) }}"
-                                                class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap"
-                                                target="_blank">
-                                                Cetak Resi
-                                            </a>
-                                            <button onclick="showRefundModal('{{ $booking->id }}')"
-                                                class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
-                                                Minta Refund
-                                            </button>
-                                        @elseif ($booking->status_pembayaran === 'refunded')
-                                            <a href="{{ asset('storage/' . $booking->refund_proof) }}" target="_blank"
-                                                class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap">
-                                                Lihat Bukti Refund
-                                            </a>
-                                        @elseif ($booking->status_pembayaran === 'success' && now()->gt($booking->waktu_selesai))
-                                            <span
-                                                class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
-                                                title="Masa refund sudah habis">
-                                                Minta Refund
-                                            </span>
-                                        @elseif ($booking->status_pembayaran === 'meminta_refund')
-                                            <span
-                                                class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
-                                                title="Anda sudah mengajukan refund">
-                                                Minta Refund
-                                            </span>
-                                        @endif
-                                    </div>
+                                        <span
+                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed"
+                                            title="Anda sudah mengajukan refund">
+                                            Minta Refund
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         @empty
@@ -168,27 +192,27 @@
                         </div>
                     </div>
                 @elseif (($activeTab ?? '') === 'reset-password')
-                    <h2 class="text-white text-xl font-semibold">Reset Password</h2>
+                    <h2 class="text-white text-xl font-semibold">Ubah Kata Sandi</h2>
                     <!-- Form reset password -->
                     <form action="{{ route('front.account.reset-password') }}" method="POST" id="resetPasswordForm"
                         class="space-y-4 mt-4">
                         @csrf
                         <div>
-                            <label class="block mb-1 text-sm text-white" for="current_password">Password Saat
+                            <label class="block mb-1 text-sm text-white" for="current_password">Kata Sandi Saat
                                 Ini</label>
                             <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
                                 id="current_password" type="password" name="current_password" required />
                         </div>
 
                         <div>
-                            <label class="block mb-1 text-sm text-white" for="new_password">Password Baru</label>
+                            <label class="block mb-1 text-sm text-white" for="new_password">Kata Sandi Baru</label>
                             <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
                                 id="new_password" type="password" name="new_password" required />
                         </div>
 
                         <div>
                             <label class="block mb-1 text-sm text-white" for="new_password_confirmation">Konfirmasi
-                                Password Baru</label>
+                                Kata Sandi Baru</label>
                             <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
                                 id="new_password_confirmation" type="password" name="new_password_confirmation"
                                 required />
@@ -199,7 +223,7 @@
                         </button>
                     </form>
                 @elseif (($activeTab ?? '') === 'profile')
-                    <h2 class="text-white text-xl font-semibold">Account Details</h2>
+                    <h2 class="text-white text-xl font-semibold">Detail Akun</h2>
                     <section class="bg-gray-700 p-4 md:p-8 rounded-lg w-full space-y-4 md:space-y-6">
 
                         <!-- Edit Profile Form -->
@@ -223,7 +247,7 @@
                             </div>
 
                             <div>
-                                <label class="block mb-1 text-sm text-white" for="phone">Phone Number</label>
+                                <label class="block mb-1 text-sm text-white" for="phone">Nomor Telepon</label>
                                 <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
                                     id="phone" type="tel" name="phone"
                                     value="{{ Auth::user()->phone }}" />
@@ -232,7 +256,7 @@
                             <div class="flex justify-between items-center">
                                 <button type="submit"
                                     class="mt-3 md:mt-4 p-2 bg-yellow-500 text-black rounded text-sm md:text-base">
-                                    Update Profile
+                                    Ubah Profil
                                 </button>
                             </div>
                         </form>

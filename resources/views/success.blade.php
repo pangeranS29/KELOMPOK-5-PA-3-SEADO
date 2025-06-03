@@ -58,15 +58,11 @@
                             <div class="border-t border-gray-700 pt-4 mt-4">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-300 font-medium text-sm whitespace-nowrap">
-                                        Pembayaran:a
+                                        Status Pembayaran:
                                     </span>
-                                    @if ($booking->status_pembayaran === 'pending')
+                                    @if ($booking->status_pembayaran === 'menunggu_konfirmasi')
                                         <span class="text-yellow-400 text-sm font-bold whitespace-nowrap">
                                             Menunggu Konfirmasi
-                                        </span>
-                                    @else
-                                        <span class="text-yellow-400 text-sm font-bold whitespace-nowrap">
-                                            Rp {{ number_format($booking->total_harga, 0, ',', '.') }}
                                         </span>
                                     @endif
                                 </div>

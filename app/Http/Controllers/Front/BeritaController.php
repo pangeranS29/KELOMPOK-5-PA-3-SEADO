@@ -140,7 +140,7 @@ class BeritaController extends Controller
 
                 return [
                     'id' => $booking->id,
-                    'text' => 'Booking #' . $booking->id . ' - ' . ($statusText[$booking->status_pembayaran] ?? 'Status tidak diketahui'),
+                    'text' => 'Pesanan #' . $booking->id . ' - ' . ($statusText[$booking->status_pembayaran] ?? 'Status tidak diketahui'),
                     'created_at' => $booking->created_at->format('d M Y H:i'),
                     'status' => $booking->status_pembayaran,
                     'display_status' => $booking->status_pembayaran

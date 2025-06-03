@@ -233,7 +233,7 @@
                                             </div>
                                             <div class="ml-3">
                                                 <h3 class="text-white font-medium">Tidak Pakai Drone</h3>
-                                                <p class="text-gray-400 text-sm">Tidak menggunakan layanan fotografi
+                                                <p class="text-gray-400 text-sm">Tidak menggunakan layanan foto dan video
                                                     drone</p>
                                             </div>
                                         </label>
@@ -248,9 +248,9 @@
                                                     class="h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-600">
                                             </div>
                                             <div class="ml-3">
-                                                <h3 class="text-white font-medium">Fotografi Drone (File Mentah)</h3>
-                                                <p class="text-gray-400 text-sm">Foto udara dari pengalaman Anda dengan
-                                                    file mentah (+Rp 500.000)</p>
+                                                <h3 class="text-white font-medium">Pakai Drone (+Rp 500.000)</h3>
+                                                <p class="text-gray-400 text-sm">Menggunakan Layanan Foto dan Video
+                                                    drone (Foto Dan Video Tidak Di Edit)</p>
                                             </div>
                                         </label>
                                     </div>
@@ -264,10 +264,10 @@
                                                     class="h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-600">
                                             </div>
                                             <div class="ml-3">
-                                                <h3 class="text-white font-medium">Fotografi Drone (File + Editing)
+                                                <h3 class="text-white font-medium">Pakai Drone (+Rp 1.000.000)
                                                 </h3>
-                                                <p class="text-gray-400 text-sm">Foto udara dengan hasil editing
-                                                    profesional (+Rp 1.000.000)</p>
+                                                <p class="text-gray-400 text-sm">Menggunakan Layanan Foto dan Video
+                                                    drone (Foto Dan Video Di Edit CINEMATIC)</p>
                                             </div>
                                         </label>
                                     </div>

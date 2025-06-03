@@ -71,7 +71,7 @@
                 <div class="lg:w-2/3">
                     <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
                         <div class="bg-gradient-to-r from-yellow-500 to-yellow-400 p-4">
-                            <h1 class="text-black text-2xl font-bold">PEMBAYARAN</h1>
+                            <h1 class="text-black text-2xl font-bold">UNGGAH BUKTI PEMBAYARAN</h1>
                         </div>
 
                         <div class="p-6">
@@ -118,7 +118,7 @@
                                             d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Detail Booking
+                                    Detail Pemesanan
                                 </h2>
 
                                 <div class="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
