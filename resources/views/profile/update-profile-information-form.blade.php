@@ -1,10 +1,10 @@
 <x-form-section submit="updateProfileInformation">
     <x-slot name="title">
-        {{ __('Profile Information') }}
+        {{ __('Informasi Profil') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Update your account\'s profile information and email address.') }}
+        {{ __('Perbarui informasi profil akun dan alamat email Anda.') }}
     </x-slot>
 
     <x-slot name="form">
@@ -83,13 +83,17 @@
         </div>
     </x-slot>
 
-    <x-slot name="actions">
-        <x-action-message class="me-3" on="saved">
-            {{ __('Saved.') }}
-        </x-action-message>
+     <x-slot name="actions">
+            <x-action-message class="me-3" on="saved">
+                {{ __('Disimpan.') }}
+            </x-action-message>
 
-        <x-button wire:loading.attr="disabled" wire:target="photo">
-            {{ __('Save') }}
-        </x-button>
-    </x-slot>
+            <x-button
+                wire:loading.attr="disabled"
+                wire:target="photo, updateProfileInformation"
+                type="submit">
+                {{ __('Simpan') }}
+            </x-button>
+        </x-slot>
 </x-form-section>
+

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\BookingRequest;
+use App\Mail\RefundProcessedNotification;
 
 class BookingController extends Controller
 {
@@ -225,9 +226,7 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Proses refund untuk booking
-     */
+
     /**
      * Process refund for booking
      */
@@ -283,6 +282,10 @@ class BookingController extends Controller
 
         $encodedMessage = urlencode($message);
         $whatsappUrl = "https://wa.me/{$formattedPhone}?text={$encodedMessage}";
+
+        // Send email notification to user
+        Mail::to($booking->user->email)
+            ->send(new RefundProcessedNotification($booking, $request->refund_note));
 
         return response()->json([
             'message' => 'Refund berhasil diproses',

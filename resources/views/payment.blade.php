@@ -187,7 +187,7 @@
                                                             <div class="flex items-center justify-center w-full mb-2">
                                                                 <img src="{{ asset('svgs/bank-bri.svg') }}" alt="BRI Bank"
                                                                     class="h-8 mr-2">
-                                                                <span class="text-white font-medium">BRI</span>
+                                                                <span class="text-white font-medium"></span>
                                                             </div>
                                                             <span class="text-gray-400 text-xs">Bank Rakyat Indonesia</span>
                                                         </label>
@@ -204,7 +204,7 @@
                                                             <div class="flex items-center justify-center w-full mb-2">
                                                                 <img src="{{ asset('svgs/bank-sumut.svg') }}"
                                                                     alt="Bank SUMUT" class="h-8 mr-2">
-                                                                <span class="text-white font-medium">Bank SUMUT</span>
+                                                                <span class="text-white font-medium"></span>
                                                             </div>
                                                             <span class="text-gray-400 text-xs">Bank Sumatera Utara</span>
                                                         </label>

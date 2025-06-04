@@ -327,7 +327,7 @@
                                             <a href="{{ url('account?tab=profile') }}"
                                                 class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                                 <i class="fa-solid fa-id-badge mr-3 text-blue-500"></i>
-                                                <span>Profil</span>
+                                                <span>Akun</span>
                                             </a>
                                             <a href="{{ url('account?tab=transaction') }}"
                                                 class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200">

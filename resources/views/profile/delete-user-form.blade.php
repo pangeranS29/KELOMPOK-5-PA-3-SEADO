@@ -1,20 +1,23 @@
 <x-action-section>
     <x-slot name="title">
-        {{ __('Delete Account') }}
+        {{ __('Hapus Akun') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Permanently delete your account.') }}
+        {{ __('Hapus akun Anda secara permanen.') }}
     </x-slot>
 
     <x-slot name="content">
         <div class="max-w-xl text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+            {{ __('Setelah akun Anda dihapus, semua sumber daya dan datanya akan dihapus secara permanen. Sebelum menghapus akun Anda, harap unduh data atau informasi apa pun yang ingin Anda simpan.') }}
         </div>
 
         <div class="mt-5">
-            <x-danger-button wire:click="confirmUserDeletion" wire:loading.attr="disabled">
-                {{ __('Delete Account') }}
+            <x-danger-button
+                wire:click="confirmUserDeletion"
+                wire:loading.attr="disabled"
+                onclick="confirmDeleteAccount()">
+                {{ __('Hapus Akun') }}
             </x-danger-button>
         </div>
 
@@ -44,10 +47,57 @@
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3" wire:click="deleteUser" wire:loading.attr="disabled">
+                <x-danger-button
+                    class="ms-3"
+                    wire:click="deleteUser"
+                    wire:loading.attr="disabled"
+                    onclick="deleteAccountConfirmation()">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </x-slot>
         </x-dialog-modal>
     </x-slot>
 </x-action-section>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDeleteAccount() {
+        Swal.fire({
+            title: 'Apakah Anda Yakin?',
+            text: "Akun Anda akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.emit('confirmUserDeletion');
+            }
+        });
+    }
+
+    function deleteAccountConfirmation() {
+        Swal.fire({
+            title: 'Sedang Memproses',
+            text: 'Menghapus akun Anda...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
+    document.addEventListener('accountDeleted', function(e) {
+        Swal.fire(
+            'Dihapus!',
+            'Akun Anda telah dihapus.',
+            'success'
+        ).then(() => {
+            window.location.href = '/';
+        });
+    });
+</script>
+@endpush
