@@ -73,7 +73,6 @@
                                         {{ $user->isSuperAdmin() && auth()->user()->id === $user->id ? 'disabled' : '' }}>
                                     <option value="USER" {{ old('roles', $user->roles) === 'USER' ? 'selected' : '' }}>USER</option>
                                     <option value="ADMIN" {{ old('roles', $user->roles) === 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
-                                    <option value="SUPER_ADMIN" {{ old('roles', $user->roles) === 'SUPER_ADMIN' ? 'selected' : '' }}>SUPER_ADMIN</option>
                                 </select>
                                 @if($user->isSuperAdmin() && auth()->user()->id === $user->id)
                                     <input type="hidden" name="roles" value="SUPER_ADMIN">
