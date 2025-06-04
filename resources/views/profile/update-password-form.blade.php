@@ -1,4 +1,4 @@
-<x-admin-layout>
+
     <x-form-section submit="updatePassword">
         <x-slot name="title">
             {{ __('Perbarui Kata Sandi') }}
@@ -42,4 +42,4 @@
         </x-slot>
     </x-form-section>
 
-</x-admin-layout>
+

@@ -13,10 +13,7 @@
         </div>
 
         <div class="mt-5">
-            <x-danger-button
-                wire:click="confirmUserDeletion"
-                wire:loading.attr="disabled"
-                onclick="confirmDeleteAccount()">
+            <x-danger-button wire:click="confirmUserDeletion" wire:loading.attr="disabled">
                 {{ __('Hapus Akun') }}
             </x-danger-button>
         </div>
@@ -47,57 +44,10 @@
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button
-                    class="ms-3"
-                    wire:click="deleteUser"
-                    wire:loading.attr="disabled"
-                    onclick="deleteAccountConfirmation()">
+                <x-danger-button class="ms-3" wire:click="deleteUser" wire:loading.attr="disabled">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </x-slot>
         </x-dialog-modal>
     </x-slot>
 </x-action-section>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    function confirmDeleteAccount() {
-        Swal.fire({
-            title: 'Apakah Anda Yakin?',
-            text: "Akun Anda akan dihapus secara permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Livewire.emit('confirmUserDeletion');
-            }
-        });
-    }
-
-    function deleteAccountConfirmation() {
-        Swal.fire({
-            title: 'Sedang Memproses',
-            text: 'Menghapus akun Anda...',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    }
-
-    document.addEventListener('accountDeleted', function(e) {
-        Swal.fire(
-            'Dihapus!',
-            'Akun Anda telah dihapus.',
-            'success'
-        ).then(() => {
-            window.location.href = '/';
-        });
-    });
-</script>
-@endpush
