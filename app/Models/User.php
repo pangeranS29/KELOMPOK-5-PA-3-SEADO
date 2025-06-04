@@ -81,4 +81,20 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot('dibaca')
             ->withTimestamps();
     }
+
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->roles, [self::ROLE_ADMIN, self::ROLE_SUPER_ADMIN]);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->roles === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isUser(): bool
+    {
+        return $this->roles === self::ROLE_USER;
+    }
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\PilihPaketController as AdminPilihPaketController
 use App\Http\Controllers\Admin\DetailPaketController as AdminDetailPaketController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Middleware\RedirectAdmin;
+use App\Http\Middleware\CheckRole;
 
 // Route Registrasi
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -49,7 +50,7 @@ Route::name('front.')->group(function () {
     });
 
     // Authenticated routes (require login)
-    Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware(['auth', 'verified',CheckRole::class . ':USER'])->group(function () {
 
         Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
@@ -95,7 +96,7 @@ Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified', // This ensures admin users must verify their email
-    // You might want to add an 'admin' role check here if you have role management
+     CheckRole::class . ':ADMIN,SUPER_ADMIN' // Fixed middleware syntax for Laravel 11
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
