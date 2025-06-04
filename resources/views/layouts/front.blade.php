@@ -332,7 +332,7 @@
                                             <a href="{{ url('account?tab=transaction') }}"
                                                 class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                                 <i class="fa-solid fa-money-check-dollar mr-3 text-green-500"></i>
-                                                <span>Transaksi</span>
+                                                <span>Pesanan Saya</span>
                                             </a>
                                             <div class="border-t border-gray-200"></div>
                                             <form method="POST" action="{{ route('logout') }}">
@@ -558,7 +558,6 @@
                         }
                     }, 30000);
                 },
-
                 toggleDropdown() {
                     this.open = !this.open;
                     if (this.open) {
@@ -575,7 +574,7 @@
                             this.calculateUnreadCount();
                         });
                 },
-
+                
                 fetchPayments() {
                     fetch('/api/payments/latest')
                         .then(response => response.json())

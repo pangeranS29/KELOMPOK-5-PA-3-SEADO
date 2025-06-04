@@ -366,7 +366,7 @@
                     title: 'Bukti Pembayaran Terkirim!',
                     html: `
                     <div class="text-left">
-                        <p class="mb-2">Terima kasih telah mengupload bukti pembayaran.</p>
+                        <p class="mb-2">Terima kasih telah menggunggah bukti pembayaran.</p>
                         <p class="mb-2">Pesanan Anda akan segera kami verifikasi.</p>
                         <div class="bg-gray-100 p-3 rounded-lg mt-4 text-gray-800">
                             <p class="font-semibold">Detail Pesanan:</p>
@@ -436,7 +436,7 @@
                 methodName = 'Transfer Bank';
                 instructions = `
                 <div class="text-left">
-                    <p class="mb-2">Anda akan diarahkan untuk mengupload bukti transfer.</p>
+                    <p class="mb-2">Anda akan diarahkan untuk mengunggah bukti transfer.</p>
                     <p class="text-sm text-yellow-400">Pastikan transfer sesuai dengan nominal yang tertera.</p>
                 </div>
             `;

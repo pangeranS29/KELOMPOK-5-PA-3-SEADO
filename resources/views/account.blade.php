@@ -35,7 +35,7 @@
             <!-- Main Content Section -->
             <section class="bg-gray-800 p-4 md:p-6 rounded-lg w-full space-y-4 md:space-y-6">
                 @if (($activeTab ?? '') === 'transaction')
-                    <h2 class="text-white text-xl font-semibold">My Transaction</h2>
+                    <h2 class="text-white text-xl font-semibold">Pesanan Saya</h2>
                     <div class="space-y-4 md:space-y-6">
                         <!-- Table Header -->
                         <center>
@@ -102,7 +102,8 @@
                                             Menunggu Konfirmasi
                                         </span>
                                     @elseif ($booking->status_pembayaran === 'canceled')
-                                        <span class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                        <span
+                                            class="bg-red-500 text-white py-1 px-3 rounded-lg text-sm text-center inline-block min-w-[180px] ">
                                             Dibatalkan
                                         </span>
                                     @elseif ($booking->status_pembayaran === 'expired')
@@ -110,7 +111,8 @@
                                             Kadaluarsa
                                         </span>
                                     @elseif ($booking->status_pembayaran === 'success')
-                                        <span class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm text-center">
+                                        <span
+                                            class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm text-center inline-block min-w-[180px]">
                                             Lunas
                                         </span>
                                     @elseif ($booking->status_pembayaran === 'rejected')
@@ -119,8 +121,13 @@
                                             Bayar Kembali
                                         </a>
                                     @elseif ($booking->status_pembayaran === 'meminta_refund')
-                                        <span class="bg-purple-500 text-white py-1 px-3 rounded-lg text-xs text-center">
+                                        <span class="bg-yellow-500 text-white py-1 px-3 rounded-lg text-sm text-center">
                                             Permintaan Refund
+                                        </span>
+                                    @elseif ($booking->status_pembayaran === 'refunded')
+                                        <span
+                                            class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm text-center inline-block min-w-[180px]">
+                                            Refund
                                         </span>
                                     @endif
                                 </div>
@@ -139,21 +146,9 @@
                                         </button>
                                     @elseif ($booking->status_pembayaran === 'refunded')
                                         <a href="{{ asset('storage/' . $booking->refund_proof) }}" target="_blank"
-                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-xs whitespace-nowrap w-full text-center">
-                                            Lihat Bukti Refund
+                                            class="bg-blue-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap w-full text-center">
+                                            Bukti Refund
                                         </a>
-                                    @elseif ($booking->status_pembayaran === 'success' && now()->gt($booking->waktu_selesai))
-                                        <span
-                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed w-full text-center"
-                                            title="Masa refund sudah habis">
-                                            Minta Refund
-                                        </span>
-                                    @elseif ($booking->status_pembayaran === 'meminta_refund')
-                                        <span
-                                            class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm whitespace-nowrap cursor-not-allowed w-full text-center"
-                                            title="Anda sudah mengajukan refund">
-                                            Minta Refund
-                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -234,7 +229,7 @@
                     <section class="bg-gray-700 p-4 md:p-8 rounded-lg w-full space-y-4 md:space-y-6">
 
                         <!-- Edit Profile Form -->
-                        <form action="{{ route('front.account.update') }}" method="POST"
+                        <form action="{{ route('front.account.update') }}" method="POST" id="profileForm"
                             class="space-y-3 md:space-y-4">
                             @csrf
                             @method('PUT')
@@ -260,12 +255,10 @@
                                     value="{{ Auth::user()->phone }}" />
                             </div>
 
-                            <div class="flex justify-between items-center">
-                                <button type="submit"
-                                    class="mt-3 md:mt-4 p-2 bg-yellow-500 text-black rounded text-sm md:text-base">
-                                    Ubah Profil
-                                </button>
-                            </div>
+                            <button type="button" onclick="confirmUpdateProfile()"
+                                class="mt-3 md:mt-4 p-2 bg-yellow-500 text-black rounded text-sm md:text-base">
+                                Ubah Profil
+                            </button>
                         </form>
                     </section>
                 @else
@@ -348,58 +341,47 @@
                 });
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tangkap form update profile
-            const updateForm = document.querySelector('form[action="{{ route('front.account.update') }}"]');
+         function confirmUpdateProfile() {
+        const form = document.getElementById('profileForm');
+        const name = document.getElementById('name')?.value || '';
+        const email = document.getElementById('email')?.value || '';
+        const phone = document.getElementById('phone')?.value || '';
 
-            if (updateForm) {
-                updateForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    // Ambil nilai form
-                    const name = document.getElementById('name').value;
-                    const email = document.getElementById('email').value;
-                    const phone = document.getElementById('phone').value;
-
-                    // Show confirmation dialog
-                    Swal.fire({
-                        title: 'Konfirmasi Update Profile',
-                        html: `
+        Swal.fire({
+            title: 'Konfirmasi Perubahan Profil',
+            html: `
                 <div class="text-left">
                     <p class="mb-2"><strong>Nama:</strong> ${name}</p>
                     <p class="mb-2"><strong>Email:</strong> ${email}</p>
-                    <p class="mb-2"><strong>Nomor Telepon:</strong> ${phone || '-'}</p>
+                    <p><strong>Nomor Telepon:</strong> ${phone || '-'}</p>
                 </div>
-                `,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#f59e0b',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Update Profile',
-                        cancelButtonText: 'Periksa Kembali',
-                        backdrop: `
-                rgba(0,0,0,0.7)
-                left top
-                no-repeat
-                `
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Show loading indicator
-                            Swal.fire({
-                                title: 'Memproses Update',
-                                html: 'Mohon tunggu sebentar...',
-                                allowOutsideClick: false,
-                                didOpen: () => {
-                                    Swal.showLoading();
-                                    // Submit form secara manual setelah konfirmasi
-                                    updateForm.submit();
-                                }
-                            });
-                        }
-                    });
+                <p class="mt-4 text-sm">Anda yakin ingin menyimpan perubahan ini?</p>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#f59e0b',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Simpan Perubahan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    html: 'Sedang menyimpan perubahan profil',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
+
+                if (form) {
+                    form.submit();
+                } else {
+                    Swal.fire('Error', 'Form tidak ditemukan.', 'error');
+                }
             }
         });
+    }
 
         document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
