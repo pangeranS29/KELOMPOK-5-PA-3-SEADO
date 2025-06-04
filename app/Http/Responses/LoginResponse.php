@@ -10,8 +10,8 @@ class LoginResponse implements LoginResponseContract
     {
         $user = $request->user();
 
-        // Jika admin, arahkan ke dashboard admin
-        if ($user->roles === 'ADMIN') {
+        // Jika admin atau super admin, arahkan ke dashboard admin
+        if ($user->roles === 'ADMIN' || $user->roles === 'SUPER_ADMIN') {
             return redirect()->route('admin.dashboard');
         }
 
@@ -20,7 +20,7 @@ class LoginResponse implements LoginResponseContract
             return redirect()->intended($request->input('redirect_to'));
         }
 
-        // Jika bukan admin dan tidak ada redirect_to, arahkan ke landing page
+        // Jika bukan admin/super admin dan tidak ada redirect_to, arahkan ke landing page
         return redirect()->route('front.index');
     }
 }

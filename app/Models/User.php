@@ -13,6 +13,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    const ROLE_USER = 'USER';
+    const ROLE_ADMIN = 'ADMIN';
+    const ROLE_SUPER_ADMIN = 'SUPER_ADMIN';
+
     use HasApiTokens;
 
     protected $table = 'users'; // Pastikan ini ada jika nama tabel berbeda
@@ -33,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone', // <- Tambahkan ini
         'email',
         'password',
+        'roles',
 
     ];
 
@@ -70,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-     public function beritas()
+    public function beritas()
     {
         return $this->belongsToMany(Berita::class, 'user_berita')
             ->withPivot('dibaca')

@@ -37,7 +37,7 @@
             </li>
             <li>
                 <a href="{{ route('admin.bookings.index') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.bookings.index') ? 'bg-gray-700' : '' }}">
-                    Cek Booking
+                    Cek Pesanan
                 </a>
             </li>
 

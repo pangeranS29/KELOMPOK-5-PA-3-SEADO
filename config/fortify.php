@@ -73,7 +73,15 @@ return [
     |
     */
 
-    'home' => '/',
+    'home' => function () {
+        $user = auth()->user();
+
+        if ($user && ($user->roles === 'ADMIN' || $user->roles === 'SUPER_ADMIN')) {
+            return route('admin.dashboard');
+        }
+
+        return route('front.index');
+    },
 
     /*
     |--------------------------------------------------------------------------
@@ -146,8 +154,8 @@ return [
     'features' => [
         Features::registration(),
         Features::resetPasswords(),
-         Features::emailVerification(),
-         Features::emailVerification(), // Harus aktif
+        Features::emailVerification(),
+        Features::emailVerification(), // Harus aktif
         Features::updateProfileInformation(),
         Features::updatePasswords(),
         Features::twoFactorAuthentication([

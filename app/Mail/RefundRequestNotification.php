@@ -3,24 +3,27 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Booking;
 
-class PaymentNotificationMail extends Mailable
+class RefundRequestNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $booking;
+    public $refundReason;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Booking $booking)
+    public function __construct(Booking $booking, $refundReason)
     {
         $this->booking = $booking;
+        $this->refundReason = $refundReason;
     }
 
     /**
@@ -30,8 +33,7 @@ class PaymentNotificationMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Bukti Pembayaran Baru - Pesanan #' . $this->booking->id)
-                    ->view('emails.payment_notification')
-                    ->attach(public_path('storage/' . $this->booking->bukti_pembayaran));
+        return $this->subject('Permintaan Refund Baru - ID Booking: ' . $this->booking->id)
+                    ->view('emails.refund_request');
     }
 }

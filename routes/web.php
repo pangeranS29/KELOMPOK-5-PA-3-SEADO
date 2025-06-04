@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PilihPaketController as AdminPilihPaketController;
 use App\Http\Controllers\Admin\DetailPaketController as AdminDetailPaketController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Middleware\RedirectAdmin;
 
 // Route Registrasi
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -34,16 +35,18 @@ Route::get('/email/verify', function () {
 |--------------------------------------------------------------------------
 */
 Route::name('front.')->group(function () {
-    // Public routes (no auth required)
 
+    Route::middleware([RedirectAdmin::class])->group(function () {
 
-    // Berita Routes (public)
-    Route::prefix('berita')->name('berita.')->group(function () {
-        Route::get('/', [FrontBeritaController::class, 'index'])->name('index');
-        Route::get('/{slug}', [FrontBeritaController::class, 'show'])->name('show');
+        // Landing page
+        Route::get('/', [LandingController::class, 'index'])->name('index');
+
+        // Berita Routes (public)
+        Route::prefix('berita')->name('berita.')->group(function () {
+            Route::get('/', [FrontBeritaController::class, 'index'])->name('index');
+            Route::get('/{slug}', [FrontBeritaController::class, 'show'])->name('show');
+        });
     });
-
-     Route::get('/', [LandingController::class, 'index'])->name('index');
 
     // Authenticated routes (require login)
     Route::middleware(['auth', 'verified'])->group(function () {
@@ -91,7 +94,7 @@ Route::name('front.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-     'verified', // This ensures admin users must verify their email
+    'verified', // This ensures admin users must verify their email
     // You might want to add an 'admin' role check here if you have role management
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');

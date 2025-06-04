@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Front;
 
 use App\Models\Booking;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RefundRequestNotification;
 
 class AccountController extends Controller
 {
@@ -67,41 +69,47 @@ class AccountController extends Controller
 
 
     public function requestRefund(Request $request, $id)
-    {
-        $booking = Booking::where('users_id', auth()->id())
-            ->where('id', $id)
-            ->firstOrFail();
+{
+    $booking = Booking::where('users_id', auth()->id())
+        ->where('id', $id)
+        ->with(['user', 'detail_paket.pilihpaket'])
+        ->firstOrFail();
 
-        // Validasi booking bisa direfund
-        if ($booking->status_pembayaran !== 'success') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Hanya transaksi dengan status success yang bisa direfund.'
-            ], 400);
-        }
-
-        if (now()->gt($booking->waktu_selesai)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Masa refund sudah habis (melebihi waktu selesai booking).'
-            ], 400);
-        }
-
-        if ($booking->status_pembayaran === 'meminta_refund') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda sudah mengajukan refund untuk transaksi ini.'
-            ], 400);
-        }
-
-        // Update status pembayaran
-        $booking->update([
-            'status_pembayaran' => 'meminta_refund'
-        ]);
-
+    // Validasi booking bisa direfund
+    if ($booking->status_pembayaran !== 'success') {
         return response()->json([
-            'success' => true,
-            'message' => 'Permintaan refund berhasil dikirim. Silakan lanjutkan konfirmasi via WhatsApp.'
-        ]);
+            'success' => false,
+            'message' => 'Hanya transaksi dengan status success yang bisa direfund.'
+        ], 400);
     }
+
+    if (now()->gt($booking->waktu_selesai)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Masa refund sudah habis (melebihi waktu selesai booking).'
+        ], 400);
+    }
+
+    if ($booking->status_pembayaran === 'meminta_refund') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Anda sudah mengajukan refund untuk transaksi ini.'
+        ], 400);
+    }
+
+    // Update status pembayaran
+    $booking->update([
+        'status_pembayaran' => 'meminta_refund'
+    ]);
+
+    // Send email notification
+    $refundReason = $request->input('refund_reason', 'Tidak ada alasan yang diberikan');
+    Mail::to(env('MAIL_FROM_ADDRESS'))
+        ->send(new RefundRequestNotification($booking, $refundReason));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Permintaan refund berhasil dikirim. Silakan lanjutkan konfirmasi via WhatsApp.'
+    ]);
+}
 }

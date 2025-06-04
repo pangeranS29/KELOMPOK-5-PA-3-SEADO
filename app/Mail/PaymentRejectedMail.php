@@ -22,7 +22,7 @@ class PaymentRejectedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Pembayaran Ditolak - Booking #' . $this->booking->id)
+        return $this->subject('Pembayaran Ditolak - Pesanan #' . $this->booking->id)
                     ->view('emails.payment_rejected');
     }
 }
