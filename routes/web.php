@@ -1,21 +1,23 @@
 <?php
 
 use App\Models\Berita;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\RedirectAdmin;
+use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Controllers\Front\DetailController;
 use App\Http\Controllers\Front\AccountController;
 use App\Http\Controllers\Front\LandingController;
 use App\Http\Controllers\Front\PaymentController;
+use App\Http\Controllers\Admin\DataUserController;
 use App\Http\Controllers\Front\CheckoutController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Front\BeritaController as FrontBeritaController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\BeritaController as AdminBeritaPaketController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PilihPaketController as AdminPilihPaketController;
 use App\Http\Controllers\Admin\DetailPaketController as AdminDetailPaketController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Middleware\RedirectAdmin;
-use App\Http\Middleware\CheckRole;
 
 // Route Registrasi
 Route::get('/register', [RegisteredUserController::class, 'create'])
@@ -96,7 +98,7 @@ Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified', // This ensures admin users must verify their email
-     CheckRole::class . ':ADMIN,SUPER_ADMIN' // Fixed middleware syntax for Laravel 11
+    CheckRole::class . ':ADMIN,SUPER_ADMIN' // Fixed middleware syntax for Laravel 11
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -123,4 +125,13 @@ Route::prefix('admin')->name('admin.')->middleware([
 
     Route::get('beritas/{berita}', [AdminBeritaPaketController::class, 'show'])
         ->name('beritas.show');
+
+    // Data User Routes
+    Route::controller(DataUserController::class)
+        ->middleware(SuperAdminMiddleware::class)
+        ->group(function () {
+            Route::get('/datauser', 'index')->name('datauser.index');
+            Route::get('/datauser/{user}/edit', 'edit')->name('datauser.edit');
+            Route::put('/datauser/{user}', 'update')->name('datauser.update');
+        });
 });
