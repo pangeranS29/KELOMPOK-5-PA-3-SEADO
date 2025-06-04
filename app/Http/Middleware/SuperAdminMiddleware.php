@@ -11,7 +11,7 @@ class SuperAdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->isAdmin()) {
+        if (!auth()->check() || !auth()->user()->isSuperAdmin()) {
             abort(403, 'Hanya Super Admin Yang Dapat Membuka Halaman Ini.');
         }
 
