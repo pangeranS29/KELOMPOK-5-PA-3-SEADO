@@ -52,7 +52,7 @@ Route::name('front.')->group(function () {
     });
 
     // Authenticated routes (require login)
-    Route::middleware(['auth', 'verified',CheckRole::class . ':USER'])->group(function () {
+    Route::middleware(['auth', 'verified', CheckRole::class . ':USER'])->group(function () {
 
         Route::get('/detail/{id}', [DetailController::class, 'index'])->name('detail');
 
@@ -97,7 +97,6 @@ Route::name('front.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified', // This ensures admin users must verify their email
     CheckRole::class . ':ADMIN,SUPER_ADMIN' // Fixed middleware syntax for Laravel 11
 ])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
