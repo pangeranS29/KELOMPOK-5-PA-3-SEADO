@@ -11,20 +11,15 @@ class RedirectAdmin
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        // If user is authenticated and has admin role
-        if ($user && $this->isAdmin($user)) {
-            // Check if the request is for an admin route to prevent redirect loops
+        if ($user && $this->isAdminOrSuperAdmin($user)) {
             if (!$this->isAdminRoute($request)) {
-                return redirect()->route('admin.dashboard');
+                // Redirect berdasarkan role
+                return $this->redirectBasedOnRole($user);
             }
         }
 
@@ -32,21 +27,30 @@ class RedirectAdmin
     }
 
     /**
-     * Check if user has admin role
+     * Cek apakah user ADMIN atau SUPER_ADMIN.
      */
-    protected function isAdmin(User $user): bool
+    protected function isAdminOrSuperAdmin(User $user): bool
     {
         return in_array($user->roles, [User::ROLE_ADMIN, User::ROLE_SUPER_ADMIN]);
     }
 
     /**
-     * Check if the request is for an admin route
+     * Cek apakah request saat ini mengarah ke route admin.
      */
     protected function isAdminRoute(Request $request): bool
     {
-        $path = $request->path();
-        return str_starts_with($path, 'admin') ||
-               $request->routeIs('admin.*') ||
-               in_array($path, ['admin', 'admin/login']);
+        return $request->routeIs('admin.*') || str_starts_with($request->path(), 'admin');
+    }
+
+    /**
+     * Redirect sesuai role user.
+     */
+    protected function redirectBasedOnRole(User $user): Response
+    {
+        if ($user->roles === User::ROLE_SUPER_ADMIN) {
+            return redirect()->route('admin.datauser.index');
+        }
+
+        return redirect()->route('admin.dashboard');
     }
 }

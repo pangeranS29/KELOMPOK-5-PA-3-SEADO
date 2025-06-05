@@ -13,48 +13,44 @@
     <!-- Navigation Links -->
     <nav class="mt-auto p-4 border-t border-gray-700">
         <ul class="space-y-4">
-            <li>
-                <a href="{{ route('admin.dashboard') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
-                    Dashboard
-                </a>
-            </li>
-
-            {{-- <li>
-                <a href="{{ route('admin.jetski.index') }}" class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.jetski.index') ? 'bg-gray-700' : '' }}">
-
-                </a>
-            </li> --}}
-
-            <li>
-                <a href="{{ route('admin.pilihpakets.index') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.pilihpakets.index') ? 'bg-gray-700' : '' }}">
-                    Tambah Paket Jetski
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.detail_pakets.index') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.detail_pakets.index') ? 'bg-gray-700' : '' }}">
-                    Detail Paket
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.bookings.index') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.bookings.index') ? 'bg-gray-700' : '' }}">
-                    Cek Pesanan
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ route('admin.beritas.index') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.news.*') ? 'bg-gray-700' : '' }}">
-                    Buat Berita
-                </a>
-            </li>
-
             @php
                 $user = auth()->user();
             @endphp
+
+            @if ($user && $user->isAdminn())
+                <li>
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.pilihpakets.index') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.pilihpakets.index') ? 'bg-gray-700' : '' }}">
+                        Tambah Paket Jetski
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.detail_pakets.index') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.detail_pakets.index') ? 'bg-gray-700' : '' }}">
+                        Detail Paket
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.bookings.index') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.bookings.index') ? 'bg-gray-700' : '' }}">
+                        Cek Pesanan
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.beritas.index') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.news.*') ? 'bg-gray-700' : '' }}">
+                        Buat Berita
+                    </a>
+                </li>
+            @endif
+
 
             @if ($user && $user->isSuperAdmin())
                 <li>
