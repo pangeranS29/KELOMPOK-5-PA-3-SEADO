@@ -16,9 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
 
         // 🔹 Middleware Alias (untuk dipanggil di route)
-        // $middleware->alias([
-        //     'admin' => \App\Http\Middleware\IsAdmin::class, // Middleware Admin
-        // ]);
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\IsAdmin::class, // Middleware Admin
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
