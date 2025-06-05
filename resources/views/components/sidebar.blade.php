@@ -52,12 +52,18 @@
                 </a>
             </li>
 
-            <li>
-                <a href="{{ route('admin.datauser.index') }}"
-                    class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.datauser.*') ? 'bg-gray-700' : '' }}">
-                    Data Pengguna
-                </a>
-            </li>
+            @php
+                $user = auth()->user();
+            @endphp
+
+            @if ($user && $user->isSuperAdmin())
+                <li>
+                    <a href="{{ route('admin.datauser.index') }}"
+                        class="block px-4 py-2 hover:bg-gray-700 {{ request()->routeIs('admin.datauser.*') ? 'bg-gray-700' : '' }}">
+                        Data Pengguna
+                    </a>
+                </li>
+            @endif
 
         </ul>
     </nav>
