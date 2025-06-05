@@ -28,20 +28,16 @@ class PilihPaketController extends Controller
                         <a class="block w-full px-2 py-1 mb-1 text-xs text-center text-white transition duration-500 bg-gray-700 border border-gray-700 rounded-md select-none ease hover:bg-gray-800 focus:outline-none focus:shadow-outline"
                             href="' . route('admin.pilihpakets.edit', $pilihpakets->id) . '">
                            Edit
-                        </a>
-
-                        <form class="block w-full" onsubmit="return confirm(\'Apakah anda yakin?\');" -block" action="' . route('admin.pilihpakets.destroy', $pilihpakets->id) . '" method="POST">
-                        <button class="w-full px-2 py-1 text-xs text-white transition duration-500 bg-red-500 border border-red-500 rounded-md select-none ease hover:bg-red-600 focus:outline-none focus:shadow-outline" >
-                            Hapus
-                        </button>
-                            ' . method_field('delete') . csrf_field() . '
-                        </form>';
+                        </a>';
                 })
-                ->rawColumns(['action'])
+                ->addColumn('status', function ($pilihpakets) {
+                    return $pilihpakets->status_paket == 'aktif'
+                        ? '<span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Aktif</span>'
+                        : '<span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-200 rounded-full">Nonaktif</span>';
+                })
+                ->rawColumns(['action', 'status'])
                 ->make();
         }
-
-
 
         //Script untuk return halaman view pilihpaket
         return view('admin.pilihpakets.index');
@@ -61,7 +57,9 @@ class PilihPaketController extends Controller
     public function store(PilihPaketRequest $request)
     {
         // Data sudah divalidasi oleh PilihPaketRequest
-        PilihPaket::create($request->validated());
+        $data = $request->validated();
+        $data['status_paket'] = $request->status_paket ?? 'aktif';
+        PilihPaket::create($data);
 
         return redirect()->route('admin.pilihpakets.index')->with('success', 'Paket berhasil ditambahkan!');
     }
@@ -85,18 +83,9 @@ class PilihPaketController extends Controller
     public function update(PilihPaketRequest $request, string $id)
     {
         $pilihpakets = PilihPaket::findOrFail($id);
-        $pilihpakets->update($request->validated());
+        $data = $request->validated();
+        $data['status_paket'] = $request->status_paket;
+        $pilihpakets->update($data);
         return redirect()->route('admin.pilihpakets.index')->with('success', 'Paket berhasil diperbarui!');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $pilihpaket = PilihPaket::findOrFail($id);
-        $pilihpaket->delete();
-
-        return redirect()->route('admin.pilihpakets.index')->with('success', 'Paket berhasil dihapus!');
     }
 }

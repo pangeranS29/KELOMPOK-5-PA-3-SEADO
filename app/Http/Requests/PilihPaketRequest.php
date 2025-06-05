@@ -28,6 +28,7 @@ class PilihPaketRequest extends FormRequest
             'deskripsi' => 'nullable|string',
             'jumlah_jetski' => 'required|integer|min:0',
             'durasi' => 'required|integer|min:0', // Tambahkan ini
+            'status_paket' => 'required|in:aktif,nonaktif' // Pastikan ini ada
         ];
     }
 

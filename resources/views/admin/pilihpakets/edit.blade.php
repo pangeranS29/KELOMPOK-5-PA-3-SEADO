@@ -2,9 +2,6 @@
     <x-slot name="title">Admin</x-slot>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{-- <a href="#!" onclick="window.history.go(-1); return false;" class="text-gray-500 hover:text-gray-700">
-                ← Kembali
-            </a> --}}
             {!! __('Pilih Paket &raquo; Edit &raquo; #') . $pilihpaket->id . ' &middot; ' . $pilihpaket->nama_paket !!}
         </h2>
     </x-slot>
@@ -90,6 +87,22 @@
                                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                        id="jumlah_jetski" type="text" placeholder="jumlah_jetski" required>
                                 <p class="text-gray-600 text-xs italic">Masukkan Jumlah  Paket Jetski.</p>
+                            </div>
+                        </div>
+
+                        <!-- Field: Status -->
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="status_paket">
+                                    Status Paket*
+                                </label>
+                                <select name="status_paket"
+                                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="status_paket" required>
+                                    <option value="aktif" {{ old('status_paket', $pilihpaket->status_paket) == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="nonaktif" {{ old('status_paket', $pilihpaket->status_paket) == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                                </select>
+                                <p class="text-gray-600 text-xs italic">Pilih status paket. Aktif akan ditampilkan, nonaktif tidak ditampilkan.</p>
                             </div>
                         </div>
 

@@ -10,8 +10,15 @@ class LandingController extends Controller
 {
     public function index()
     {
-        // Get all detail packages with their related pilihpaket, ordered by latest
-        $detail_pakets = DetailPaket::with(['pilihpaket'])->latest()->get();
+        // Ambil detail_paket yang hanya memiliki relasi pilihpaket dengan status 'aktif'
+        $detail_pakets = DetailPaket::with(['pilihpaket' => function($query) {
+                $query->where('status_paket', 'aktif');
+            }])
+            ->whereHas('pilihpaket', function($query) {
+                $query->where('status_paket', 'aktif');
+            })
+            ->latest()
+            ->get();
 
         return view('landing', [
             'detail_pakets' => $detail_pakets

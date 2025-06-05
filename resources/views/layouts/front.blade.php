@@ -159,17 +159,20 @@
                                 <div x-show="open" @click.outside="open = false" x-cloak
                                     class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-gray-200">
                                     <div class="py-1">
-                                        @foreach (\App\Models\PilihPaket::with([
-        'detail_paket' => function ($query) {
-            $query->limit(1);
-        },
-    ])->has('detail_paket')->get() as $paket)
-                                            <a href="{{ route('front.detail', $paket->detail_paket->first()->id) }}"
-                                                class="block px-4 py-2 text-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition-colors duration-200 text-sm">
-                                                {{ $paket->nama_paket }}
-                                            </a>
-                                        @endforeach
-                                    </div>
+                    @foreach (\App\Models\PilihPaket::with([
+                        'detail_paket' => function ($query) {
+                            $query->limit(1);
+                        },
+                    ])
+                    ->where('status_paket', 'aktif') // Hanya ambil paket aktif
+                    ->has('detail_paket')
+                    ->get() as $paket)
+                        <a href="{{ route('front.detail', $paket->detail_paket->first()->id) }}"
+                            class="block px-4 py-2 text-gray-800 hover:bg-yellow-400 hover:text-gray-900 transition-colors duration-200 text-sm">
+                            {{ $paket->nama_paket }}
+                        </a>
+                    @endforeach
+                </div>
                                 </div>
                             </div>
 
@@ -574,7 +577,7 @@
                             this.calculateUnreadCount();
                         });
                 },
-                
+
                 fetchPayments() {
                     fetch('/api/payments/latest')
                         .then(response => response.json())
