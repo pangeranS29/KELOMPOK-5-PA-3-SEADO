@@ -23,16 +23,17 @@ class PaymentController extends Controller
     {
         $booking = Booking::findOrFail($bookingId);
 
-        if ($booking->users_id !== auth()->id()) {
+        if ((int) $booking->users_id !== (int) auth()->id()) {
             abort(403, 'Anda tidak memiliki akses ke booking ini.');
         }
 
         return $booking;
     }
 
+
     public function index(Request $request, $bookingId)
     {
-       $booking = $this->getUserBookingOrFail($bookingId);
+         $booking = $this->getUserBookingOrFail($bookingId);
         $booking->load('detail_paket.pilihpaket', 'user');
 
         // Cek semua kondisi expired
@@ -49,8 +50,7 @@ class PaymentController extends Controller
             'metode_pembayaran' => 'required|string',
         ]);
 
-
-        $booking = $this->getUserBookingOrFail($bookingId);
+        $booking = Booking::findOrFail($bookingId);
         $booking->metode_pembayaran = $request->input('metode_pembayaran');
         $booking->save();
 
@@ -75,7 +75,7 @@ class PaymentController extends Controller
 
     public function uploadBuktiPembayaran(Request $request, $bookingId)
     {
-        $booking = $this->getUserBookingOrFail($bookingId);
+        $booking = Booking::findOrFail($bookingId);
 
         $request->validate([
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:5048',
@@ -125,7 +125,7 @@ class PaymentController extends Controller
 
     public function checkExpired($bookingId)
     {
-         $booking = $this->getUserBookingOrFail($bookingId);
+        $booking = Booking::findOrFail($bookingId);
 
         if ($this->isBookingExpired($booking)) {
             return response()->json(['status' => 'expired']);
@@ -190,7 +190,7 @@ class PaymentController extends Controller
         return false;
     }
 
-     public function cancel(Request $request, $bookingId)
+    public function cancel(Request $request, $bookingId)
     {
         $booking = Booking::findOrFail($bookingId);
 
@@ -213,8 +213,7 @@ class PaymentController extends Controller
     // Tambahkan method ini di PaymentController
     public function cetakResi($bookingId)
     {
-        $booking = $this->getUserBookingOrFail($bookingId);
-        $booking->load('detail_paket.pilihpaket', 'user');
+        $booking = Booking::with('detail_paket.pilihpaket', 'user')->findOrFail($bookingId);
 
         $pdf = Pdf::loadView('pdf.resi', compact('booking'));
         return $pdf->download('resi_booking_' . $booking->id . '.pdf');
