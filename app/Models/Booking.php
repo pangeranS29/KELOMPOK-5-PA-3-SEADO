@@ -47,4 +47,9 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class, 'users_id');
     }
+
+    public function scopeForCurrentUser($query)
+{
+    return $query->where('user_id', auth()->id());
+}
 }
