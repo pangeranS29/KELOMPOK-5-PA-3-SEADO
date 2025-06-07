@@ -363,11 +363,11 @@
 
             // Check file size (max 2MB)
             const file = fileInput.files[0];
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 5 * 1024 * 1024; // 5MB
             if (file.size > maxSize) {
                 Swal.fire({
                     title: 'File Terlalu Besar',
-                    text: 'Ukuran file maksimal 2MB. Silakan pilih file yang lebih kecil.',
+                    text: 'Ukuran file maksimal 5MB. Silakan pilih file yang lebih kecil.',
                     icon: 'error',
                     confirmButtonColor: '#f59e0b'
                 });
@@ -375,16 +375,17 @@
             }
 
             // Check file type
-            const validTypes = ['image/jpeg', 'image/png'];
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!validTypes.includes(file.type)) {
                 Swal.fire({
                     title: 'Format File Tidak Didukung',
-                    text: 'Hanya file JPG, PNG yang diperbolehkan.',
+                    text: 'Hanya file JPG, PNG, JPEG yang diperbolehkan.',
                     icon: 'error',
                     confirmButtonColor: '#f59e0b'
                 });
                 return;
             }
+
 
             // Show confirmation dialog
             Swal.fire({

@@ -145,7 +145,7 @@ class PaymentController extends Controller
             'current_status' => $booking->status_pembayaran,
             'waktu_selesai' => $booking->waktu_selesai,
             'now' => now(),
-            'is_past_due' => now()->greaterThan($booking->waktu_selesai)
+            'is_past_due' => now()->greaterTha  n($booking->waktu_selesai)
         ]);
 
         // Jika booking sudah success dan waktu selesai sudah lewat

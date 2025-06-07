@@ -221,7 +221,7 @@
                         </div>
 
                         <button type="submit" class="mt-3 p-2 bg-yellow-500 text-black rounded text-sm">
-                            Reset Password
+                            Ubah Kata Sandi
                         </button>
                     </form>
                 @elseif (($activeTab ?? '') === 'profile')
@@ -387,13 +387,13 @@
             e.preventDefault();
 
             Swal.fire({
-                title: 'Reset Password?',
+                title: 'Ganti Kata Sandi?',
                 text: "Anda yakin ingin mengubah password?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#f59e0b',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Reset Password',
+                confirmButtonText: 'Ya, Ganti Kata Sandi',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
