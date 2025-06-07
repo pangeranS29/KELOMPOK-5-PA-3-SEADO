@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Front;
 
+
 use Carbon\Carbon;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log; // Add this line
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -19,9 +21,28 @@ class PaymentController extends Controller
     // Durasi waktu untuk memilih metode pembayaran (1 jam)
     const SELECT_PAYMENT_METHOD_DURATION_MINUTES = 60;
 
+    /**
+     * Memeriksa kepemilikan booking
+     */
+    protected function checkBookingOwnership($booking)
+    {
+        if (auth()->id() !== $booking->user_id) {
+            Log::warning('Percobaan akses tidak sah ke booking', [
+                'user_id' => auth()->id(),
+                'booking_user_id' => $booking->user_id,
+                'booking_id' => $booking->id,
+                'ip' => request()->ip()
+            ]);
+            abort(403, 'Anda tidak memiliki akses ke booking ini');
+        }
+    }
+
     public function index(Request $request, $bookingId)
     {
         $booking = Booking::with('detail_paket.pilihpaket', 'user')->findOrFail($bookingId);
+
+        // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
 
         // Cek semua kondisi expired
         if ($this->isBookingExpired($booking)) {
@@ -38,6 +59,11 @@ class PaymentController extends Controller
         ]);
 
         $booking = Booking::findOrFail($bookingId);
+
+         // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
+
+
         $booking->metode_pembayaran = $request->input('metode_pembayaran');
         $booking->save();
 
@@ -114,6 +140,9 @@ class PaymentController extends Controller
     {
         $booking = Booking::findOrFail($bookingId);
 
+         // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
+
         if ($this->isBookingExpired($booking)) {
             return response()->json(['status' => 'expired']);
         }
@@ -124,6 +153,9 @@ class PaymentController extends Controller
     public function showUploadForm($bookingId)
     {
         $booking = Booking::with('detail_paket.pilihpaket', 'user')->findOrFail($bookingId);
+
+        // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
 
         // Cek semua kondisi expired
         if ($this->isBookingExpired($booking)) {
@@ -181,6 +213,9 @@ class PaymentController extends Controller
     {
         $booking = Booking::findOrFail($bookingId);
 
+         // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
+
         // Validasi status sebelum cancel
         if (!in_array($booking->status_pembayaran, ['pending', 'menunggu_konfirmasi'])) {
             return response()->json([
@@ -201,6 +236,9 @@ class PaymentController extends Controller
     public function cetakResi($bookingId)
     {
         $booking = Booking::with('detail_paket.pilihpaket', 'user')->findOrFail($bookingId);
+
+         // Verifikasi kepemilikan
+        $this->checkBookingOwnership($booking);
 
         $pdf = Pdf::loadView('pdf.resi', compact('booking'));
         return $pdf->download('resi_booking_' . $booking->id . '.pdf');
