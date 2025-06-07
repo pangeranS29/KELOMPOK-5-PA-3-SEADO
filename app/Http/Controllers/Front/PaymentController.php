@@ -190,9 +190,9 @@ class PaymentController extends Controller
         return false;
     }
 
-    public function cancel(Request $request, $bookingId)
+     public function cancel(Request $request, $bookingId)
     {
-        $booking = $this->getUserBookingOrFail($bookingId);
+        $booking = Booking::findOrFail($bookingId);
 
         // Validasi status sebelum cancel
         if (!in_array($booking->status_pembayaran, ['pending', 'menunggu_konfirmasi'])) {
