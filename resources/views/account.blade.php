@@ -220,9 +220,11 @@
                                 required />
                         </div>
 
-                        <button type="submit" class="mt-3 p-2 bg-yellow-500 text-black rounded text-sm">
+                        <button type="submit" onclick="confirmResetPassword()" class="mt-3 p-2 bg-yellow-500 text-black rounded text-sm">
                             Ubah Kata Sandi
                         </button>
+
+
                     </form>
                 @elseif (($activeTab ?? '') === 'profile')
                     <h2 class="text-white text-xl font-semibold">Detail Akun</h2>
@@ -257,7 +259,7 @@
 
                             <button type="button" onclick="confirmUpdateProfile()"
                                 class="mt-3 md:mt-4 p-2 bg-yellow-500 text-black rounded text-sm md:text-base">
-                                Ubah Profil
+                                Ubah Akun
                             </button>
                         </form>
                     </section>
@@ -341,15 +343,15 @@
                 });
         });
 
-         function confirmUpdateProfile() {
-        const form = document.getElementById('profileForm');
-        const name = document.getElementById('name')?.value || '';
-        const email = document.getElementById('email')?.value || '';
-        const phone = document.getElementById('phone')?.value || '';
+        function confirmUpdateProfile() {
+            const form = document.getElementById('profileForm');
+            const name = document.getElementById('name')?.value || '';
+            const email = document.getElementById('email')?.value || '';
+            const phone = document.getElementById('phone')?.value || '';
 
-        Swal.fire({
-            title: 'Konfirmasi Perubahan Profil',
-            html: `
+            Swal.fire({
+                title: 'Konfirmasi Perubahan Akun',
+                html: `
                 <div class="text-left">
                     <p class="mb-2"><strong>Nama:</strong> ${name}</p>
                     <p class="mb-2"><strong>Email:</strong> ${email}</p>
@@ -357,58 +359,92 @@
                 </div>
                 <p class="mt-4 text-sm">Anda yakin ingin menyimpan perubahan ini?</p>
             `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#f59e0b',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Simpan Perubahan',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menyimpan...',
-                    html: 'Sedang menyimpan perubahan profil',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                if (form) {
-                    form.submit();
-                } else {
-                    Swal.fire('Error', 'Form tidak ditemukan.', 'error');
-                }
-            }
-        });
-    }
-
-        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: 'Ganti Kata Sandi?',
-                text: "Anda yakin ingin mengubah password?",
-                icon: 'warning',
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#f59e0b',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Ganti Kata Sandi',
+                confirmButtonText: 'Ya, Simpan Perubahan',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Tampilkan loading
                     Swal.fire({
-                        title: 'Memproses Update',
-                        html: 'Mohon tunggu sebentar...',
+                        title: 'Menyimpan...',
+                        html: 'Sedang menyimpan perubahan akun',
+                        allowOutsideClick: false,
                         didOpen: () => {
                             Swal.showLoading();
-                            // Submit form setelah konfirmasi
-                            e.target.submit();
                         }
                     });
+
+                    if (form) {
+                        form.submit();
+                    } else {
+                        Swal.fire('Error', 'Form tidak ditemukan.', 'error');
+                    }
                 }
             });
+        }
+
+        function confirmResetPassword() {
+            const form = document.getElementById('resetPasswordForm');
+            const currentPassword = document.getElementById('current_password')?.value || '';
+            const newPassword = document.getElementById('new_password')?.value || '';
+            const confirmPassword = document.getElementById('new_password_confirmation')?.value || '';
+
+            // Validasi sebelum menampilkan konfirmasi
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Konfirmasi kata sandi baru tidak cocok',
+                    icon: 'error',
+                    confirmButtonColor: '#f59e0b'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi Ubah Kata Sandi',
+                html: `
+            <div class="text-left">
+                <p class="mb-2 text-sm"><strong>Kata Sandi Baru:</strong> ${'•'.repeat(newPassword.length)}</p>
+                <p class="text-xs text-gray-400 mt-2">Anda yakin ingin mengubah kata sandi Anda?</p>
+            </div>
+        `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f59e0b',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Ubah Kata Sandi',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        html: 'Sedang mengubah kata sandi',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    if (form) {
+                        form.submit();
+                    } else {
+                        Swal.fire('Error', 'Form tidak ditemukan.', 'error');
+                    }
+                }
+            });
+        }
+
+        // Tambahkan event listener ke form
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('resetPasswordForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    confirmResetPassword();
+                });
+            }
         });
     </script>
 </x-front-layout>
