@@ -82,7 +82,7 @@
         }
 
         .swal2-cancel {
-            background-color: #3085d6 !important;
+            background-color: #ef4444 !important;
         }
     </style>
 

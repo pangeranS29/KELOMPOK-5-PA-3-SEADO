@@ -271,7 +271,7 @@
                 @else
                     <a href="{{ route('index') }}"
                         class="inline-block mx-auto bg-yellow-500 text-black py-2 px-6 rounded-lg text-sm md:text-base hover:bg-yellow-400 transition">
-                        Cari Paket Wisata
+                        Pesan Paket Jetski
                     </a>
                 @endif
             </section>
