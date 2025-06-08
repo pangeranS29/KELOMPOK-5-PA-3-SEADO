@@ -53,7 +53,7 @@
                     <button type="button"
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
                         onclick="togglePassword('password')">
-                        <i id="password-eye" class="fas fa-eye"></i>
+                        <i id="password-eye" class="fas fa-eye-slash"></i>
                     </button>
                 </div>
                 @error('password')
@@ -72,7 +72,7 @@
                     <button type="button"
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
                         onclick="togglePassword('password_confirmation')">
-                        <i id="password_confirmation-eye" class="fas fa-eye"></i>
+                        <i id="password_confirmation-eye" class="fas fa-eye-slash"></i>
                     </button>
                 </div>
             </div>
@@ -126,10 +126,10 @@
 
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
-                    eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+                    eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
                 } else {
                     passwordInput.type = 'password';
-                    eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+                    eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
                 }
             }
 
