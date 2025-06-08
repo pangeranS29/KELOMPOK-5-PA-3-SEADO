@@ -12,7 +12,9 @@
             <div>
                 <x-label for="name" value="{{ __('Nama Lengkap') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required
-                    autofocus autocomplete="name" />
+                    autofocus autocomplete="name" pattern="[A-Za-z\s]+" title="Hanya huruf dan spasi diperbolehkan" />
+                <p id="nameError" class="mt-1 text-sm text-red-600 hidden">Nama lengkap hanya boleh mengandung huruf dan
+                    spasi</p>
                 @error('name')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -116,43 +118,77 @@
     </x-authentication-card>
 
     <script>
-        function togglePassword(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            const eyeIcon = document.getElementById(`${fieldId}-eye`);
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+         // Toggle password visibility
+            function togglePassword(fieldId) {
+                const passwordInput = document.getElementById(fieldId);
+                const eyeIcon = document.getElementById(`${fieldId}-eye`);
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
             }
-        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Element references
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('nameError');
             const emailInput = document.getElementById('email');
             const emailError = document.getElementById('emailError');
             const phoneInput = document.getElementById('phone');
             const phoneError = document.getElementById('phoneError');
-            const registerForm = document.getElementById('registerForm');
-            const submitButton = document.getElementById('submitButton');
+            const passwordInput = document.getElementById('password');
+            const passwordConfirmationInput = document.getElementById('password_confirmation');
+            const registerForm = document.querySelector('form[method="POST"]');
 
-            // Fungsi untuk memvalidasi email Google
+            // Validation functions
+            function validateName(name) {
+                return /^[A-Za-z\s]+$/.test(name);
+            }
+
             function validateGoogleEmail(email) {
+                if (!email.includes('@')) return false;
                 const googleDomains = ['gmail.com', 'googlemail.com'];
                 const domain = email.split('@')[1];
                 return googleDomains.includes(domain);
             }
 
-            // Fungsi untuk memvalidasi nomor telepon
             function validatePhoneNumber(phone) {
-                // Hanya angka dan maksimal 12 digit
                 return /^\d{1,12}$/.test(phone);
             }
 
-            // Validasi saat input email berubah
-            emailInput.addEventListener('input', function() {
+            function validatePassword(password) {
+                return password.length >= 8;
+            }
+
+            function validatePasswordConfirmation(password, confirmation) {
+                return password === confirmation;
+            }
+
+            // Event handlers
+            function handleNameInput() {
+                const name = this.value.trim();
+
+                // Clean invalid characters immediately
+                this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+
+                if (name === '') {
+                    nameError.classList.add('hidden');
+                    return;
+                }
+
+                if (!validateName(name)) {
+                    nameError.classList.remove('hidden');
+                } else {
+                    nameError.classList.add('hidden');
+                }
+            }
+
+            function handleEmailInput() {
                 const email = this.value.trim();
 
                 if (email === '') {
@@ -165,13 +201,17 @@
                 } else {
                     emailError.classList.add('hidden');
                 }
-            });
+            }
 
-            // Validasi saat input telepon berubah
-            phoneInput.addEventListener('input', function() {
-                // Hanya memperbolehkan input angka
+            function handlePhoneInput() {
+                // Only allow numbers
                 this.value = this.value.replace(/\D/g, '');
 
+                // Limit to 12 digits
+                if (this.value.length > 12) {
+                    this.value = this.value.substring(0, 12);
+                }
+
                 const phone = this.value.trim();
 
                 if (phone === '') {
@@ -184,74 +224,87 @@
                 } else {
                     phoneError.classList.add('hidden');
                 }
-            });
+            }
 
-            // Validasi saat form disubmit
-            registerForm.addEventListener('submit', function(e) {
+            function addShakeAnimation(element) {
+                element.classList.add('animate-shake');
+                setTimeout(() => {
+                    element.classList.remove('animate-shake');
+                }, 500);
+            }
+
+            function handleFormSubmit(e) {
+                let hasError = false;
+                const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
                 const phone = phoneInput.value.trim();
-                let hasError = false;
+                const password = passwordInput.value;
+                const passwordConfirmation = passwordConfirmationInput.value;
 
-                if (!validateGoogleEmail(email)) {
+                // Validate name
+                if (!validateName(name)) {
                     e.preventDefault();
-                    emailError.classList.remove('hidden');
-                    emailInput.focus();
-                    hasError = true;
-
-                    // Animasi shake untuk menunjukkan error
-                    emailInput.classList.add('animate-shake');
-                    setTimeout(() => {
-                        emailInput.classList.remove('animate-shake');
-                    }, 500);
-                }
-
-                if (!validatePhoneNumber(phone)) {
-                    e.preventDefault();
-                    phoneError.classList.remove('hidden');
-
+                    nameError.classList.remove('hidden');
                     if (!hasError) {
-                        phoneInput.focus();
+                        nameInput.focus();
+                        addShakeAnimation(nameInput);
                         hasError = true;
                     }
-
-                    // Animasi shake untuk menunjukkan error
-                    phoneInput.classList.add('animate-shake');
-                    setTimeout(() => {
-                        phoneInput.classList.remove('animate-shake');
-                    }, 500);
-                }
-            });
-
-            // Validasi real-time saat kehilangan fokus
-            emailInput.addEventListener('blur', function() {
-                const email = this.value.trim();
-
-                if (email === '') {
-                    emailError.classList.add('hidden');
-                    return;
                 }
 
+                // Validate email
                 if (!validateGoogleEmail(email)) {
+                    e.preventDefault();
                     emailError.classList.remove('hidden');
-                } else {
-                    emailError.classList.add('hidden');
-                }
-            });
-
-            phoneInput.addEventListener('blur', function() {
-                const phone = this.value.trim();
-
-                if (phone === '') {
-                    phoneError.classList.add('hidden');
-                    return;
+                    if (!hasError) {
+                        emailInput.focus();
+                        addShakeAnimation(emailInput);
+                        hasError = true;
+                    }
                 }
 
+                // Validate phone
                 if (!validatePhoneNumber(phone)) {
+                    e.preventDefault();
                     phoneError.classList.remove('hidden');
-                } else {
-                    phoneError.classList.add('hidden');
+                    if (!hasError) {
+                        phoneInput.focus();
+                        addShakeAnimation(phoneInput);
+                        hasError = true;
+                    }
                 }
-            });
+
+                // Validate password
+                if (!validatePassword(password)) {
+                    e.preventDefault();
+                    if (!hasError) {
+                        passwordInput.focus();
+                        addShakeAnimation(passwordInput);
+                        hasError = true;
+                    }
+                }
+
+                // Validate password confirmation
+                if (!validatePasswordConfirmation(password, passwordConfirmation)) {
+                    e.preventDefault();
+                    if (!hasError) {
+                        passwordConfirmationInput.focus();
+                        addShakeAnimation(passwordConfirmationInput);
+                        hasError = true;
+                    }
+                }
+            }
+
+            // Event listeners
+            nameInput.addEventListener('input', handleNameInput);
+            emailInput.addEventListener('input', handleEmailInput);
+            phoneInput.addEventListener('input', handlePhoneInput);
+
+            nameInput.addEventListener('blur', handleNameInput);
+            emailInput.addEventListener('blur', handleEmailInput);
+            phoneInput.addEventListener('blur', handlePhoneInput);
+
+            registerForm.addEventListener('submit', handleFormSubmit);
         });
     </script>
 

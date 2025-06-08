@@ -220,7 +220,8 @@
                                 required />
                         </div>
 
-                        <button type="submit" onclick="confirmResetPassword()" class="mt-3 p-2 bg-yellow-500 text-black rounded text-sm">
+                        <button type="submit" onclick="confirmResetPassword()"
+                            class="mt-3 p-2 bg-yellow-500 text-black rounded text-sm">
                             Ubah Kata Sandi
                         </button>
 
@@ -238,9 +239,11 @@
 
                             <div>
                                 <label class="block mb-1 text-sm text-white" for="name">Name</label>
-                                <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
-                                    id="name" type="text" name="name"
-                                    value="{{ Auth::user()->name }}" />
+                                <input id="name" name="name" type="text"
+                                    class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
+                                    value="{{ Auth::user()->name }}">
+                                <p id="nameError" class="text-red-400 text-xs mt-1 hidden">Nama hanya boleh berisi
+                                    huruf dan spasi.</p>
                             </div>
 
                             <div>
@@ -252,9 +255,11 @@
 
                             <div>
                                 <label class="block mb-1 text-sm text-white" for="phone">Nomor Telepon</label>
-                                <input class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
-                                    id="phone" type="tel" name="phone"
-                                    value="{{ Auth::user()->phone }}" />
+                                <input id="phone" name="phone" type="tel"
+                                    class="w-full p-2 rounded bg-gray-800 border border-gray-600 text-sm text-white"
+                                    value="{{ Auth::user()->phone }}">
+                                <p id="phoneError" class="text-red-400 text-xs mt-1 hidden">Hanya angka yang
+                                    diperbolehkan.</p>
                             </div>
 
                             <button type="button" onclick="confirmUpdateProfile()"
@@ -264,13 +269,71 @@
                         </form>
                     </section>
                 @else
-                    <p class="text-red-500">Tab tidak ditemukan.</p>
+                    <a href="{{ route('index') }}"
+                        class="inline-block mx-auto bg-yellow-500 text-black py-2 px-6 rounded-lg text-sm md:text-base hover:bg-yellow-400 transition">
+                        Cari Paket Wisata
+                    </a>
                 @endif
             </section>
         </div>
     </main>
 
     <script>
+        // Fungsi validasi input name
+        function handleNameInput() {
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('nameError');
+            let value = nameInput.value;
+
+            const cleanedValue = value.replace(/[^A-Za-z\s]/g, '');
+            if (value !== cleanedValue) {
+                nameInput.value = cleanedValue;
+            }
+
+            if (cleanedValue.trim() === '') {
+                nameError.classList.remove('hidden');
+            } else {
+                nameError.classList.add('hidden');
+            }
+        }
+
+        // Fungsi validasi input phone
+        function handlePhoneInput() {
+            const phoneInput = document.getElementById('phone');
+            const phoneError = document.getElementById('phoneError');
+            let value = phoneInput.value;
+
+            const cleanedValue = value.replace(/\D/g, '');
+            if (value !== cleanedValue) {
+                phoneInput.value = cleanedValue;
+            }
+
+            if (cleanedValue.trim() === '') {
+                phoneError.classList.remove('hidden');
+            } else {
+                phoneError.classList.add('hidden');
+            }
+        }
+
+        // Panggil fungsi saat DOM selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+
+            if (nameInput) {
+                nameInput.addEventListener('input', handleNameInput);
+                nameInput.addEventListener('blur', handleNameInput);
+                handleNameInput(); // Jalankan sekali saat halaman dimuat
+            }
+
+            if (phoneInput) {
+                phoneInput.addEventListener('input', handlePhoneInput);
+                phoneInput.addEventListener('blur', handlePhoneInput);
+                handlePhoneInput(); // Jalankan sekali saat halaman dimuat
+            }
+        });
+
+
         function showRefundModal(bookingId) {
             document.getElementById('booking_id').value = bookingId;
             document.getElementById('refundForm').action = `/account/request-refund/${bookingId}`;
