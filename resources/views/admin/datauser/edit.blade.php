@@ -31,60 +31,87 @@
 
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <div class="w-full px-3">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="name">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    for="name">
                                     Nama*
                                 </label>
                                 <input value="{{ old('name', $user->name) }}" name="name"
-                                       class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                       id="name" type="text" placeholder="Nama Pengguna" required>
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="name" type="text" placeholder="Nama Pengguna" required>
                             </div>
                         </div>
 
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <div class="w-full px-3">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    for="email">
                                     Email*
                                 </label>
                                 <input value="{{ old('email', $user->email) }}" name="email"
-                                       class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                       id="email" type="email" placeholder="Email Pengguna" required>
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="email" type="email" placeholder="Email Pengguna" required>
                             </div>
                         </div>
 
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <div class="w-full px-3">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="phone">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    for="phone">
                                     Telepon
                                 </label>
                                 <input value="{{ old('phone', $user->phone) }}" name="phone"
-                                       class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                       id="phone" type="text" placeholder="Nomor Telepon">
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="phone" type="text" placeholder="Nomor Telepon">
                             </div>
                         </div>
 
                         <div class="flex flex-wrap -mx-3 mb-6">
-                            <div class="w-full px-3">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="roles">
+                            <!-- Role -->
+                            <div class="w-full md:w-1/2 px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    for="roles">
                                     Role*
                                 </label>
                                 <select name="roles"
-                                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="roles" required
-                                        {{ $user->isSuperAdmin() && auth()->user()->id === $user->id ? 'disabled' : '' }}>
-                                    <option value="USER" {{ old('roles', $user->roles) === 'USER' ? 'selected' : '' }}>USER</option>
-                                    <option value="ADMIN" {{ old('roles', $user->roles) === 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="roles" required
+                                    {{ $user->isSuperAdmin() && auth()->user()->id === $user->id ? 'disabled' : '' }}>
+                                    <option value="USER"
+                                        {{ old('roles', $user->roles) === 'USER' ? 'selected' : '' }}>USER</option>
+                                    <option value="ADMIN"
+                                        {{ old('roles', $user->roles) === 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
                                 </select>
-                                @if($user->isSuperAdmin() && auth()->user()->id === $user->id)
+                                @if ($user->isSuperAdmin() && auth()->user()->id === $user->id)
                                     <input type="hidden" name="roles" value="SUPER_ADMIN">
-                                    <p class="text-gray-600 text-xs italic">Anda tidak dapat mengubah role SUPER_ADMIN sendiri.</p>
+                                    <p class="text-gray-600 text-xs italic">Anda tidak dapat mengubah role SUPER_ADMIN
+                                        sendiri.</p>
                                 @endif
                             </div>
+
+                            <!-- Status -->
+                            <div class="w-full md:w-1/2 px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    for="status_user">
+                                    Status*
+                                </label>
+                                <select name="status_user"
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="status_user" required>
+                                    <option value="aktif"
+                                        {{ old('status_user', $user->status_user) === 'aktif' ? 'selected' : '' }}>AKTIF
+                                    </option>
+                                    <option value="non-aktif"
+                                        {{ old('status_user', $user->status_user) === 'non-aktif' ? 'selected' : '' }}>
+                                        NON-AKTIF</option>
+                                </select>
+                            </div>
                         </div>
+
 
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <div class="w-full px-3">
                                 <button type="submit"
-                                        class="shadow bg-green-500 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
+                                    class="shadow bg-green-500 hover:bg-green-700 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
                                     Simpan Perubahan
                                 </button>
                             </div>

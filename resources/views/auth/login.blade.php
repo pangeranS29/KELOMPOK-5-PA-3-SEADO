@@ -1,25 +1,31 @@
 <x-guest-layout>
-    <div
-        class="w-full max-w-md bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-xl p-8 border border-gray-800 shadow-2xl">
+    <div class="w-full max-w-md bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-xl p-8 border border-gray-800 shadow-2xl">
         <div class="text-center mb-2">
             <i class="fas fa-user-circle text-5xl text-yellow-500 mb-4"></i>
         </div>
 
-        <h2 class="text-3xl font-bold text-center mb-8 text-yellow-400">Login</h2>
+        <h2 class="text-3xl font-bold text-center mb-6 text-yellow-400">Login</h2>
 
+        {{-- Pesan sukses --}}
         @if (session('status'))
             <div class="mb-4 font-medium text-sm text-green-500">
                 {{ session('status') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        {{-- Pesan error umum --}}
+        @if (session('error'))
+            <div id="inactive-message" class="mb-4 font-medium text-sm text-red-500">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" id="login-form">
             @csrf
 
-            <!-- Tambahkan input hidden untuk redirect_to -->
             <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
 
-            <!-- Email -->
+            {{-- Email --}}
             <div class="mb-5">
                 <label for="email" class="block text-gray-400 mb-2">Email</label>
                 <div class="relative">
@@ -34,7 +40,7 @@
                 @enderror
             </div>
 
-            <!-- Password -->
+            {{-- Password --}}
             <div class="mb-6">
                 <label for="password" class="block text-gray-400 mb-2">Kata Sandi</label>
                 <div class="relative">
@@ -53,7 +59,7 @@
                 @enderror
             </div>
 
-            <!-- Remember Me & Forgot Password -->
+            {{-- Lupa Password --}}
             <div class="flex items-center justify-end mb-6">
                 @if (Route::has('password.request'))
                     <a class="text-sm text-yellow-500 hover:text-yellow-400 hover:underline"
@@ -63,27 +69,24 @@
                 @endif
             </div>
 
-
+            {{-- Tombol Masuk --}}
             <button type="submit"
                 class="w-full p-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition duration-300 shadow-lg hover:shadow-yellow-500/20">
                 Masuk
             </button>
         </form>
 
-
-
+        {{-- Link Register --}}
         <div class="mt-8 text-center text-gray-400">
             Belum punya akun?
-            <a href="{{ route('register') }}" class="text-yellow-500 hover:text-yellow-400 hover:underline">Daftar
-                Sekarang</a>
+            <a href="{{ route('register') }}" class="text-yellow-500 hover:text-yellow-400 hover:underline">
+                Daftar Sekarang
+            </a>
         </div>
     </div>
-
-
 </x-guest-layout>
 
-
-
+{{-- Script JS --}}
 <script>
     function togglePassword() {
         const passwordInput = document.getElementById('password');
@@ -99,4 +102,18 @@
             eyeIcon.classList.add('fa-eye');
         }
     }
+
+    // SweetAlert jika akun non-aktif
+    document.addEventListener('DOMContentLoaded', function () {
+        const inactiveMessage = document.getElementById('inactive-message');
+        if (inactiveMessage && inactiveMessage.textContent.toLowerCase().includes('dinonaktifkan')) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Akun Dinonaktifkan',
+                text: 'Akun Anda telah dinonaktifkan. Silahkan hubungi administrator via WhatsApp: 085763189029.',
+                confirmButtonColor: '#f59e0b',
+                confirmButtonText: 'Mengerti'
+            });
+        }
+    });
 </script>

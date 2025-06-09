@@ -20,22 +20,28 @@ class DataUserController extends Controller
             return DataTables::of($query)
                 ->addColumn('action', function ($user) {
                     return '
-                        <a class="block w-full px-2 py-1 mb-1 text-xs text-center text-white transition duration-500 bg-blue-500 border border-blue-500 rounded-md select-none ease hover:bg-blue-600 focus:outline-none focus:shadow-outline"
-                            href="' . route('admin.datauser.edit', $user->id) . '">
-                            Edit
-                        </a>';
+            <a class="block w-full px-2 py-1 mb-1 text-xs text-center text-white transition duration-500 bg-blue-500 border border-blue-500 rounded-md select-none ease hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+                href="' . route('admin.datauser.edit', $user->id) . '">
+                Edit
+            </a>';
                 })
                 ->editColumn('roles', function ($user) {
                     return '<span class="px-2 py-1 text-xs font-semibold leading-tight text-' .
-                           ($user->roles === User::ROLE_SUPER_ADMIN ? 'red' :
-                            ($user->roles === User::ROLE_ADMIN ? 'blue' : 'gray')) .
-                           '-700 bg-' .
-                           ($user->roles === User::ROLE_SUPER_ADMIN ? 'red' :
-                            ($user->roles === User::ROLE_ADMIN ? 'blue' : 'gray')) .
-                           '-100 rounded-full">' .
-                           $user->roles . '</span>';
+                        ($user->roles === User::ROLE_SUPER_ADMIN ? 'red' : ($user->roles === User::ROLE_ADMIN ? 'blue' : 'gray')) .
+                        '-700 bg-' .
+                        ($user->roles === User::ROLE_SUPER_ADMIN ? 'red' : ($user->roles === User::ROLE_ADMIN ? 'blue' : 'gray')) .
+                        '-100 rounded-full">' .
+                        $user->roles . '</span>';
                 })
-                ->rawColumns(['action', 'roles'])
+                ->editColumn('status_user', function ($user) {
+                    return '<span class="px-2 py-1 text-xs font-semibold leading-tight text-' .
+                        ($user->status_user === 'aktif' ? 'green' : 'red') .  // Changed to lowercase
+                        '-700 bg-' .
+                        ($user->status_user === 'aktif' ? 'green' : 'red') .  // Changed to lowercase
+                        '-100 rounded-full">' .
+                        strtoupper($user->status_user) . '</span>';  // Display as uppercase but compare with lowercase
+                })
+                ->rawColumns(['action', 'roles', 'status_user'])
                 ->make();
         }
 
@@ -63,7 +69,8 @@ class DataUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
-            'roles' => 'required|in:USER,ADMIN,SUPER_ADMIN'
+            'roles' => 'required|in:USER,ADMIN,SUPER_ADMIN',
+            'status_user' => 'required|in:aktif,non-aktif'  // Changed to lowercase
         ]);
 
         // Prevent downgrading own SUPER_ADMIN role

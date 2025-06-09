@@ -13,6 +13,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Laravel\Fortify\Contracts\LoginResponse;
+use App\Actions\Fortify\CustomLoginResponse;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -35,7 +39,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
@@ -44,5 +48,20 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                if ($user->status_user === User::STATUS_ACTIVE) {
+                    return $user;
+                } else {
+                    // Simpan pesan error ke session agar bisa ditangani di tampilan
+                    session()->flash('error', 'Akun Anda telah dinonaktifkan. Silahkan hubungi administrator.');
+                    return null;
+                }
+            }
+
+            return null;
+        });
     }
 }
